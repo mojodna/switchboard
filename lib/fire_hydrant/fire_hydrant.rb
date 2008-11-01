@@ -162,12 +162,14 @@ protected
     # wait for the roster to load
     roster.wait_for_roster
 
-    on_startup
+    puts "Core startup completed."
 
-    puts "Startup completed."
+    # run startup hooks
+    on_startup
   end
 
   def shutdown
+    # run shutdown hooks
     on_shutdown
 
     puts "Shutting down..."
