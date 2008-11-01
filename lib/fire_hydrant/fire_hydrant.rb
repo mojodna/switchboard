@@ -27,7 +27,7 @@ end
 class FireHydrant
   attr_reader :client, :roster
 
-  def initialize(config)
+  def initialize(config, spin = true)
     # register a handler for SIGINTs
     trap(:INT) do
       shutdown
@@ -35,6 +35,7 @@ class FireHydrant
     end
 
     @config = Hash[*config.collect { |k,v| [k.to_sym, v] }.flatten]
+    @loop = spin
 
     @client = Jabber::Client.new(@config[:jid])
   end
@@ -42,7 +43,11 @@ class FireHydrant
   def run!
     startup
 
-    sleep 5 while true
+    if loop?
+      sleep 5 while true
+    end
+
+    shutdown
   end
 
   # startup hook
@@ -82,10 +87,12 @@ protected
     @roster = Jabber::Roster::Helper.new(client)
   end
 
+  def loop?
+    @loop
+  end
+
   def presence(status = nil)
-    presence = Jabber::Presence.new(status)
-    puts ">> #{presence.to_s}"
-    client.send(presence)
+    client.send(Jabber::Presence.new(status))
   end
 
   def register_default_callbacks

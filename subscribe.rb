@@ -14,7 +14,7 @@ config = {
   "server"   => "ubuntu.local"
 }
 
-hydrant = FireHydrant.new(config)
+hydrant = FireHydrant.new(config, false)
 
 def hydrant.on_startup
   super
