@@ -7,6 +7,9 @@ rescue LoadError => e
   puts "The #{gem} gem is required."
 end
 
+# allow local library modifications/additions to be loaded
+$: << File.join(File.dirname(__FILE__))
+
 require 'oauth/consumer'
 require 'oauth/request_proxy/mock_request'
 require 'xmpp4r/pubsub'
@@ -25,6 +28,8 @@ class String
 end
 
 class FireHydrant
+  include Timeout
+
   attr_reader :client, :roster
 
   def initialize(config, spin = true)
@@ -40,6 +45,7 @@ class FireHydrant
     @client = Jabber::Client.new(@config[:jid])
   end
 
+  # Turn the hydrant on.
   def run!
     startup
 
@@ -50,7 +56,8 @@ class FireHydrant
     shutdown
   end
 
-  # startup hook
+  # Register a startup hook.
+  # Hooks will be given 5 seconds to complete before moving on.
   def on_startup(&block)
     @startup_hooks ||= []
 
@@ -59,12 +66,13 @@ class FireHydrant
       @startup_hooks << block
     else
       @startup_hooks.each do |hook|
-        instance_eval(&hook)
+        execute_hook(hook)
       end
     end
   end
 
-  # shutdown hook
+  # Register a shutdown hook.
+  # Hooks will be given 5 seconds to complete before moving on.
   def on_shutdown(&block)
     @shutdown_hooks ||= []
 
@@ -73,7 +81,7 @@ class FireHydrant
       @shutdown_hooks << block
     else
       @shutdown_hooks.each do |hook|
-        instance_eval(&hook)
+        execute_hook(hook)
       end
     end
   end
@@ -88,6 +96,18 @@ protected
 
   def disconnect
     client.close
+  end
+
+  def execute_hook(hook)
+    timeout(15) do
+      instance_eval(&hook)
+    end
+  rescue Timeout::Error
+    puts "Hook timed out"
+  rescue
+    puts "An error occurred while running the hook; shutting down..."
+    shutdown
+    raise
   end
 
   def loop?
