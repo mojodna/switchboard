@@ -6,6 +6,26 @@ module Jabber
         super(stream, pubsubjid)
       end
 
+      # override #get_subscriptions_from_all_nodes to add an oauth element
+      def get_subscriptions_from_all_nodes(oauth_consumer, oauth_token)
+        iq = basic_pubsub_query(:get)
+
+        iq.pubsub.add(create_oauth_node(oauth_consumer, oauth_token))
+
+        entities = iq.pubsub.add(REXML::Element.new('subscriptions'))
+        res = nil
+        @stream.send_with_id(iq) { |reply|
+          if reply.pubsub.first_element('subscriptions')
+            res = []
+            reply.pubsub.first_element('subscriptions').each_element('subscription') { |subscription|
+              res << Jabber::PubSub::Subscription.import(subscription)
+            }
+          end
+        }
+
+        res
+      end
+
       # override #subscribe_to to add an oauth element
       def subscribe_to(node, oauth_consumer, oauth_token)
         iq = basic_pubsub_query(:set)
