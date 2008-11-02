@@ -1,20 +1,20 @@
 #!/usr/bin/env ruby
-
-$: << File.join(File.dirname(__FILE__), "lib", "fire_hydrant")
-
 require 'fire_hydrant'
 
 # TODO extract me into a YAML file
 config = {
   "jid"      => "client@memberfresh-lm.local",
   "password" => "client",
+  "server"   => "ubuntu.local"
 }
 
 hydrant = FireHydrant.new(config, false)
 
 hydrant.on_startup do
-  if roster.items.any?
-    puts "My roster contains: #{roster.items.keys.map { |jid| jid.to_s } * ", "}"
+  # add the server as a contact if it wasn't already added
+  if roster.find(@config[:server]).empty?
+    puts "Adding #{@config[:server]} to my roster..."
+    roster.add(@config[:server], nil, true)
   end
 end
 

@@ -11,6 +11,9 @@ config = {
   # OAuth access tokens
   "oauth_token"           => "aumptqi5nzs9",
   "oauth_token_secret"    => "265gsszu59j1qr7zpjzvi6v7nkb84rhr",
+  # General Purpose access tokens
+  "oauth_token"           => "wwukmsi3shhu",
+  "oauth_token_secret"    => "utdt1o9zbjhvubjlo75a1zpg97zdzo08"
 }
 
 hydrant = FireHydrant.new(config, false)
@@ -18,21 +21,16 @@ hydrant = FireHydrant.new(config, false)
 hydrant.on_startup do
   @pubsub = Jabber::PubSub::OAuthServiceHelper.new(client, @config[:server])
 
-  # TODO extract these out
   @oauth_consumer = OAuth::Consumer.new(@config[:oauth_consumer_key], @config[:oauth_consumer_secret])
   @oauth_token = OAuth::Token.new(@config[:oauth_token], @config[:oauth_token_secret])
 
-  # send a subscription request
-  begin
-    subscription = @pubsub.subscribe_to("/api/0.1/user/aumptqi5nzs9", @oauth_consumer, @oauth_token)
-    if subscription.subscription == :subscribed
-      puts "Subscribe successful."
-    else
-      puts "Subscribe failed!".red
-    end
-  rescue Jabber::ServerError => e
-    puts "Error: #{e.inspect}"
-  end
+  # TODO this is a synchronous call, so we might want to wrap it (and other pubsub calls) in a thread w/ callbacks
+  # defer :subscriptions_received do
+  #   ...
+  # end
+  subscriptions = @pubsub.get_subscriptions_from_all_nodes(@oauth_consumer, @oauth_token)
+  puts "Subscriptions:"
+  puts subscriptions.collect { |subscription| "#{subscription.jid} => #{subscription.node}" } * "\n"
 end
 
 hydrant.run!

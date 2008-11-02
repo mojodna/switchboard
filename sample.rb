@@ -1,7 +1,4 @@
 #!/usr/bin/env ruby
-
-$: << File.join(File.dirname(__FILE__), "lib", "fire_hydrant")
-
 require 'fire_hydrant'
 
 # Jabber.debug = true
@@ -10,7 +7,7 @@ require 'fire_hydrant'
 config = {
   "jid"      => "client@memberfresh-lm.local",
   "password" => "client",
-  # TODO better name - target? recipient?
+  # TODO better name - target? recipient? node?
   "server"   => "ubuntu.local"
 }
 
