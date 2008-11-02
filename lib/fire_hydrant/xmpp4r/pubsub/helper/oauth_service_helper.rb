@@ -1,6 +1,3 @@
-require 'oauth/signature/hmac/sha1'
-require 'cgi'
-
 module Jabber
   module PubSub
     # PubSub service helper for use with OAuth-authenticated nodes
@@ -16,7 +13,6 @@ module Jabber
         sub.attributes['node'] = node
         sub.attributes['jid'] = @stream.jid.strip.to_s
 
-        # add the OAuth sauce (XEP-235)
         sub.add(create_oauth_node(oauth_consumer, oauth_token))
 
         iq.pubsub.add(sub)
@@ -37,7 +33,6 @@ module Jabber
         unsub.node = node
         unsub.jid = @stream.jid.strip
 
-        # add the OAuth sauce (XEP-235)
         unsub.add(create_oauth_node(oauth_consumer, oauth_token))
 
         iq.pubsub.add(unsub)
@@ -50,7 +45,11 @@ module Jabber
 
     protected
 
+      # add the OAuth sauce (XEP-235)
       def create_oauth_node(oauth_consumer, oauth_token)
+        require 'oauth/signature/hmac/sha1'
+        require 'cgi'
+
         request = OAuth::RequestProxy.proxy \
           "method" => "iq",
           "uri"    => [@stream.jid.strip.to_s, @pubsubjid.strip.to_s] * "&",
