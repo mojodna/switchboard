@@ -59,8 +59,7 @@ class FireHydrant
       @startup_hooks << block
     else
       @startup_hooks.each do |hook|
-        # TODO figure out how to set context/binding appropriately
-        hook.call
+        instance_eval(&hook)
       end
     end
   end
@@ -74,7 +73,7 @@ class FireHydrant
       @shutdown_hooks << block
     else
       @shutdown_hooks.each do |hook|
-        hook.call
+        instance_eval(&hook)
       end
     end
   end
@@ -85,6 +84,10 @@ protected
     client.connect
     client.auth(@config[:password])
     @roster = Jabber::Roster::Helper.new(client)
+  end
+
+  def disconnect
+    client.close
   end
 
   def loop?
@@ -173,6 +176,6 @@ protected
     on_shutdown
 
     puts "Shutting down..."
-    client.close
+    disconnect
   end
 end

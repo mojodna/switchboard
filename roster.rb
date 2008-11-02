@@ -12,9 +12,7 @@ config = {
 
 hydrant = FireHydrant.new(config, false)
 
-def hydrant.on_startup
-  super
-
+hydrant.on_startup do
   if roster.items.any?
     puts "My roster contains: #{roster.items.keys.map { |jid| jid.to_s } * ", "}"
   end
