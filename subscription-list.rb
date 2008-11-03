@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 require 'fire_hydrant'
-require 'fire_hydrant/jacks/oauth_pubsub_jack'
 
 hydrant = FireHydrant.new(YAML.load(File.read("fire_hydrant.yml")), false)
 hydrant.jack!(OAuthPubSubJack)

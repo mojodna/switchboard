@@ -1,8 +1,5 @@
 #!/usr/bin/env ruby
 require 'fire_hydrant'
-require 'fire_hydrant/jacks/auto_accept_jack'
-require 'fire_hydrant/jacks/debug_jack'
-require 'fire_hydrant/jacks/roster_debug_jack'
 
 hydrant = FireHydrant.new(YAML.load(File.read("fire_hydrant.yml")), false)
 

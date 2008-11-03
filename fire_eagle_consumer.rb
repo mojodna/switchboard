@@ -1,11 +1,9 @@
 #!/usr/bin/env ruby
 require 'fire_hydrant'
-require 'fire_hydrant/jacks/debug_jack'
-require 'fire_hydrant/jacks/oauth_pubsub_jack'
 require 'fireeagle'
 
 hydrant = FireHydrant.new(YAML.load(File.read("fire_hydrant.yml")), true)
-hydrant.jack!(OAuthPubSubJack)
+hydrant.jack!(AutoAcceptJack, DebugJack, NotifyJack, OAuthPubSubJack)
 
 hydrant.on_pubsub_event do |event|
   event.payload.each do |payload|

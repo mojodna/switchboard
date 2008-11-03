@@ -127,6 +127,10 @@ class FireHydrant
     register_hook(:roster_subscription_request, &block)
   end
 
+  def on_roster_loaded(&block)
+    register_hook(:roster_loaded, &block)
+  end
+
   def on_roster_update(&block)
     register_hook(:roster_update, &block)
   end
@@ -156,6 +160,7 @@ protected
   end
 
   def disconnect
+    presence(:unavailable)
     client.close
   end
 
@@ -193,8 +198,10 @@ protected
     @loop
   end
 
-  def presence(status = nil)
-    client.send(Jabber::Presence.new(status))
+  def presence(status = nil, to = nil)
+    presence = Jabber::Presence.new(nil, status)
+    presence.to = to
+    client.send(presence)
   end
 
   def register_default_callbacks
@@ -262,6 +269,7 @@ protected
 
     # wait for the roster to load
     roster.wait_for_roster
+    on(:roster_loaded)
 
     puts "Core startup completed." if debug?
 
