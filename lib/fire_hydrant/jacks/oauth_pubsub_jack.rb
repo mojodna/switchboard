@@ -1,3 +1,16 @@
+require 'rubygems'
+begin
+  require 'oauth'
+rescue LoadError => e
+  gem = e.message.split("--").last.strip
+  puts "The #{gem} gem is required."
+end
+
+require 'oauth/consumer'
+require 'oauth/request_proxy/mock_request'
+require 'xmpp4r/pubsub'
+require 'xmpp4r/pubsub/helper/oauth_service_helper'
+
 class OAuthPubSubJack
   def self.connect(switchboard)
     switchboard.on_startup do

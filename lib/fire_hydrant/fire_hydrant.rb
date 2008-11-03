@@ -1,6 +1,5 @@
 require 'rubygems'
 begin
-  require 'oauth'
   require 'xmpp4r'
 rescue LoadError => e
   gem = e.message.split("--").last.strip
@@ -11,10 +10,6 @@ end
 $: << File.join(File.dirname(__FILE__))
 
 require 'fire_hydrant/instance_exec'
-require 'oauth/consumer'
-require 'oauth/request_proxy/mock_request'
-require 'xmpp4r/pubsub'
-require 'xmpp4r/pubsub/helper/oauth_service_helper'
 require 'xmpp4r/roster'
 
 class FireHydrant
