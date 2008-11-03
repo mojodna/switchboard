@@ -14,6 +14,6 @@ hydrant.on_startup do
   end
 end
 
-hydrant.jack(AutoAcceptJack, DebugJack, RosterDebugJack)
+hydrant.jack!(AutoAcceptJack, DebugJack, RosterDebugJack)
 
 hydrant.run!

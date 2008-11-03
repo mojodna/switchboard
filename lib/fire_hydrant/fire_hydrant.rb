@@ -53,7 +53,7 @@ class FireHydrant
   end
 
   # Connect a jack to the switchboard
-  def jack(*jacks)
+  def jack!(*jacks)
     @jacks ||= []
     jacks.each do |jack|
       puts "Connecting jack: #{jack}"
