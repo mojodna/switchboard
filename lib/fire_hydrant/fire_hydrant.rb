@@ -10,27 +10,20 @@ end
 # allow local library modifications/additions to be loaded
 $: << File.join(File.dirname(__FILE__))
 
+require 'fire_hydrant/instance_exec'
 require 'oauth/consumer'
 require 'oauth/request_proxy/mock_request'
 require 'xmpp4r/pubsub'
 require 'xmpp4r/pubsub/helper/oauth_service_helper'
 require 'xmpp4r/roster'
 
-class String
-  def red; colorize(self, "\e[1m\e[31m"); end
-  def green; colorize(self, "\e[1m\e[32m"); end
-  def dark_green; colorize(self, "\e[32m"); end
-  def yellow; colorize(self, "\e[1m\e[33m"); end
-  def blue; colorize(self, "\e[1m\e[34m"); end
-  def dark_blue; colorize(self, "\e[34m"); end
-  def purple; colorize(self, "\e[1m\e[35m"); end
-  def colorize(text, color_code)  "#{color_code}#{text}\e[0m" end
-end
-
 class FireHydrant
   include Timeout
+  DEFAULTS = {
+    :resource => "fire_hydrant"
+  }
 
-  attr_reader :client, :roster
+  attr_reader :client, :jacks, :roster
 
   def initialize(config, spin = true)
     # register a handler for SIGINTs
@@ -39,10 +32,13 @@ class FireHydrant
       exit
     end
 
+    config = DEFAULTS.merge(config)
+
     @config = Hash[*config.collect { |k,v| [k.to_sym, v] }.flatten]
     @loop = spin
 
-    @client = Jabber::Client.new(@config[:jid])
+    # TODO jid may already have a resource, so account for that
+    @client = Jabber::Client.new([@config[:jid], @config[:resource]] * "/")
   end
 
   # Turn the hydrant on.
@@ -56,34 +52,61 @@ class FireHydrant
     shutdown
   end
 
+  # Connect a jack to the switchboard
+  def jack(*jacks)
+    @jacks ||= []
+    jacks.each do |jack|
+      puts "Connecting jack: #{jack}"
+      @jacks << jack
+      jack.connect(self)
+    end
+  end
+
+  # Register a hook to run when iq stanzas are received.
+  def on_iq(&block)
+    register_hook(:iq, &block)
+  end
+
+  # Register a hook to run when message stanzas are received.
+  def on_message(&block)
+    register_hook(:message, &block)
+  end
+
+  # Register a hook to run when presence stanzas are received.
+  def on_presence(&block)
+    register_hook(:presence, &block)
+  end
+
+  def on_roster_presence(&block)
+    register_hook(:roster_presence, &block)
+  end
+
+  def on_roster_query(&block)
+    register_hook(:roster_query, &block)
+  end
+
+  def on_roster_subscription(&block)
+    register_hook(:roster_subscription, &block)
+  end
+
+  def on_roster_subscription_request(&block)
+    register_hook(:roster_subscription_request, &block)
+  end
+
+  def on_roster_update(&block)
+    register_hook(:roster_update, &block)
+  end
+
   # Register a startup hook.
   # Hooks will be given 5 seconds to complete before moving on.
   def on_startup(&block)
-    @startup_hooks ||= []
-
-    if block_given?
-      puts "Registering startup hook"
-      @startup_hooks << block
-    else
-      @startup_hooks.each do |hook|
-        execute_hook(hook)
-      end
-    end
+    register_hook(:startup, &block)
   end
 
   # Register a shutdown hook.
   # Hooks will be given 5 seconds to complete before moving on.
   def on_shutdown(&block)
-    @shutdown_hooks ||= []
-
-    if block_given?
-      puts "Registering shutdown hook"
-      @shutdown_hooks << block
-    else
-      @shutdown_hooks.each do |hook|
-        execute_hook(hook)
-      end
-    end
+    register_hook(:shutdown, &block)
   end
 
 protected
@@ -98,9 +121,25 @@ protected
     client.close
   end
 
-  def execute_hook(hook)
+  def register_hook(name, &block)
+    @hooks ||= {}
+    @hooks[name.to_sym] ||= []
+
+    puts "Registering #{name} hook"
+    @hooks[name.to_sym] << block
+  end
+
+  def on(name, *args)
+    @hooks ||= {}
+    @hooks[name.to_sym] ||= []
+    @hooks[name.to_sym].each do |hook|
+      execute_hook(hook, *args)
+    end
+  end
+
+  def execute_hook(hook, *args)
     timeout(15) do
-      instance_eval(&hook)
+      instance_exec(*args, &hook)
     end
   rescue Timeout::Error
     puts "Hook timed out"
@@ -130,47 +169,45 @@ protected
     end
 
     client.add_presence_callback do |presence|
-      # puts "<< #{presence.to_s}"
+      on(:presence, presence)
     end
 
     client.add_message_callback do |message|
-      puts "<< #{message.to_s}"
+      on(:message, message)
     end
 
     client.add_iq_callback do |iq|
-      puts "<< #{iq.to_s}"
+      on(:iq, iq)
     end
   end
 
   def register_roster_callbacks
+    # presence from someone on my roster
     roster.add_presence_callback do |item, old_presence, new_presence|
-      # presence from someone on our roster
-      puts "presence << #{item.inspect}: #{old_presence.to_s}, #{new_presence.to_s}"
+      on(:roster_presence, item, old_presence, new_presence)
     end
 
+    # roster query completed (rarely used)
     roster.add_query_callback do |query|
-      # roster data; don't care
-      # puts "query << #{query.to_s}"
+      on(:roster_query, query)
     end
 
+    # roster subscription
     roster.add_subscription_callback do |item, presence|
       # confirmation that we were able to subscribe to someone else
-      # puts "subscription << #{item.to_s}: #{presence.to_s}"
-      unless presence.type == :subscribed
-        puts "My subscription request was rejected!"
-      end
+      on(:roster_subscription, item, presence)
     end
 
     roster.add_subscription_request_callback do |item, presence|
       # someone wants to subscribe to me!
-      # puts "subscription request << #{item.to_s}: #{presence.to_s}"
-      puts "Accepting subscription from #{presence.from}"
-      roster.accept_subscription(presence.from)
+      on(:roster_subscription_request, item, presence)
     end
 
+    # roster was updated (rarely used)
     roster.add_update_callback do |old_item, new_item|
       # roster has been updated; don't care
       # puts "update: #{old_item.inspect}, #{new_item.inspect}"
+      on(:roster_update, old_item, new_item)
     end
   end
 
@@ -188,12 +225,12 @@ protected
     puts "Core startup completed."
 
     # run startup hooks
-    on_startup
+    on(:startup)
   end
 
   def shutdown
     # run shutdown hooks
-    on_shutdown
+    on(:shutdown)
 
     puts "Shutting down..."
     disconnect
