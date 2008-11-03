@@ -188,6 +188,8 @@ protected
     puts "Hook timed out, consider deferring it."
   rescue
     puts "An error occurred while running the hook; shutting down..."
+    puts $!
+    puts $!.backtrace * "\n"
     shutdown
     raise
   end
@@ -270,6 +272,8 @@ protected
 
     # run startup hooks
     on(:startup)
+
+    puts "=> Switchboard started."
   end
 
   def shutdown
