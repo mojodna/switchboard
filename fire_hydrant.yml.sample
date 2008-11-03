@@ -3,5 +3,7 @@ password: client
 server: ubuntu.local
 oauth_consumer_key: lymcu2589svt
 oauth_consumer_secret: zhlikcolltnb0od6vbp9pfa5l7xxt4yx
+oauth_token: aumptqi5nzs9
+oauth_token_secret: 265gsszu59j1qr7zpjzvi6v7nkb84rhr
 general_token: wwukmsi3shhu
 general_token_secret: utdt1o9zbjhvubjlo75a1zpg97zdzo08

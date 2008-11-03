@@ -20,6 +20,7 @@ require 'xmpp4r/roster'
 class FireHydrant
   include Timeout
   DEFAULTS = {
+    :debug    => false,
     :resource => "fire_hydrant"
   }
 
@@ -28,6 +29,11 @@ class FireHydrant
   def initialize(config, spin = true)
     # register a handler for SIGINTs
     trap(:INT) do
+      @deferreds.each do |name, deferred|
+        puts "Killing #{name}" if debug?
+        deferred.kill
+      end
+
       shutdown
       exit
     end
@@ -36,6 +42,8 @@ class FireHydrant
 
     @config = Hash[*config.collect { |k,v| [k.to_sym, v] }.flatten]
     @loop = spin
+    @shutdown = false
+    @deferreds = {}
 
     # TODO jid may already have a resource, so account for that
     @client = Jabber::Client.new([@config[:jid], @config[:resource]] * "/")
@@ -46,20 +54,51 @@ class FireHydrant
     startup
 
     if loop?
-      sleep 5 while true
+      sleep 5 while !@shutdown
     end
 
     shutdown
+  end
+
+  def defer(callback_name, &block)
+    puts "Deferring to #{callback_name}..." if debug?
+    @deferreds[callback_name.to_sym] = Thread.new do
+
+      begin
+
+        timeout(30) do
+          results = instance_eval(&block)
+          send(callback_name.to_sym, results)
+        end
+
+        puts "Done with #{callback_name}." if debug?
+        # TODO make this thread-safe
+        @deferreds.delete(callback_name.to_sym)
+
+      rescue Timeout::Error
+        puts "Deferred method timed out."
+      rescue
+        puts "An error occurred while running a deferred: #{$!}"
+        puts $!.backtrace * "\n"
+        puts "Initiating shutdown..."
+        @shutdown = true
+      end
+    end
   end
 
   # Connect a jack to the switchboard
   def jack!(*jacks)
     @jacks ||= []
     jacks.each do |jack|
-      puts "Connecting jack: #{jack}"
+      puts "Connecting jack: #{jack}" if debug?
       @jacks << jack
       jack.connect(self)
     end
+  end
+
+  # Register a hook to run when the Jabber::Client encounters an exception.
+  def on_exception(&block)
+    register_hook(:exception, &block)
   end
 
   # Register a hook to run when iq stanzas are received.
@@ -117,6 +156,10 @@ protected
     @roster = Jabber::Roster::Helper.new(client)
   end
 
+  def debug?
+    @config[:debug]
+  end
+
   def disconnect
     client.close
   end
@@ -125,7 +168,7 @@ protected
     @hooks ||= {}
     @hooks[name.to_sym] ||= []
 
-    puts "Registering #{name} hook"
+    puts "Registering #{name} hook" if debug?
     @hooks[name.to_sym] << block
   end
 
@@ -138,11 +181,11 @@ protected
   end
 
   def execute_hook(hook, *args)
-    timeout(15) do
+    timeout(1) do
       instance_exec(*args, &hook)
     end
   rescue Timeout::Error
-    puts "Hook timed out"
+    puts "Hook timed out, consider deferring it."
   rescue
     puts "An error occurred while running the hook; shutting down..."
     shutdown
@@ -158,8 +201,9 @@ protected
   end
 
   def register_default_callbacks
-    # register default callbacks
     client.on_exception do |e, stream, where|
+      on(:exception, e, stream, where)
+
       case where
       when :something
       else
@@ -222,17 +266,22 @@ protected
     # wait for the roster to load
     roster.wait_for_roster
 
-    puts "Core startup completed."
+    puts "Core startup completed." if debug?
 
     # run startup hooks
     on(:startup)
   end
 
   def shutdown
+    while (pending = @deferreds.select { |k,d| d.alive? }.length) > 0
+      puts "Waiting for #{pending} thread(s) to finish" if debug?
+      sleep 1
+    end
+
     # run shutdown hooks
     on(:shutdown)
 
-    puts "Shutting down..."
+    puts "Shutting down..." if debug?
     disconnect
   end
 end
