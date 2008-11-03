@@ -4,14 +4,7 @@ require 'fire_hydrant/jacks/auto_accept_jack'
 require 'fire_hydrant/jacks/debug_jack'
 require 'fire_hydrant/jacks/roster_debug_jack'
 
-# TODO extract me into a YAML file
-config = {
-  "jid"      => "client@memberfresh-lm.local",
-  "password" => "client",
-  "server"   => "ubuntu.local"
-}
-
-hydrant = FireHydrant.new(config, false)
+hydrant = FireHydrant.new(YAML.load(File.read("fire_hydrant.yml")), false)
 
 hydrant.on_startup do
   # add the server as a contact if it wasn't already added

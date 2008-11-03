@@ -1,19 +1,7 @@
 #!/usr/bin/env ruby
 require 'fire_hydrant'
 
-# TODO extract me into a YAML file
-config = {
-  "jid"                   => "client@memberfresh-lm.local",
-  "password"              => "client",
-  "server"                => "ubuntu.local",
-  "oauth_consumer_key"    => "lymcu2589svt",
-  "oauth_consumer_secret" => "zhlikcolltnb0od6vbp9pfa5l7xxt4yx",
-  # OAuth access tokens
-  "oauth_token"           => "aumptqi5nzs9",
-  "oauth_token_secret"    => "265gsszu59j1qr7zpjzvi6v7nkb84rhr",
-}
-
-hydrant = FireHydrant.new(config, false)
+hydrant = FireHydrant.new(YAML.load(File.read("fire_hydrant.yml")), false)
 
 hydrant.on_startup do
   @pubsub = Jabber::PubSub::OAuthServiceHelper.new(client, @config[:server])

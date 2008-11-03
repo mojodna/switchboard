@@ -1,14 +1,7 @@
 #!/usr/bin/env ruby
 require 'fire_hydrant'
 
-# TODO extract me into a YAML file
-config = {
-  "jid"      => "client@memberfresh-lm.local",
-  "password" => "client",
-  "server"   => "ubuntu.local"
-}
-
-hydrant = FireHydrant.new(config, false)
+hydrant = FireHydrant.new(YAML.load(File.read("fire_hydrant.yml")), false)
 
 hydrant.on_startup do
   if (items = roster.find(@config[:server])).any?
