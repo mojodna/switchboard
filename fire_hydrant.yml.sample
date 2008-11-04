@@ -1,6 +1,7 @@
-jid: client@memberfresh-lm.local
-password: client
-server: ubuntu.local
+jid: client@xmpp-server
+password: password
+server: fireeagle.com
+# these are sample values and *will not* work for you
 oauth_consumer_key: lymcu2589svt
 oauth_consumer_secret: zhlikcolltnb0od6vbp9pfa5l7xxt4yx
 oauth_token: aumptqi5nzs9
