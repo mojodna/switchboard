@@ -1,6 +1,6 @@
 Fire Hydrant / Switchboard is a toolkit for assembling XMPP clients.
 
-It comes with some example instances that handle roster and pubsub subscription management.  (They should take command-line arguments but don't yet; fix your fire_hydrant.yml with appropriate settings).
+It comes with some example instances that handle roster and pubsub subscription management.  (They should take command-line arguments but don't yet; fix your fire_hydrant.yml with appropriate settings).  You'll need RUBYLIB=lib/ for it to work.
 
 It also comes with a sample consumer for Fire Eagle's preliminary XMPP pubsub node.  It does *not* appear to work with Google Talk accounts, but Jabber.org accounts seem fine.
 
