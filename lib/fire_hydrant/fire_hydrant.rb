@@ -55,13 +55,13 @@ class FireHydrant
     shutdown
   end
 
-  def defer(callback_name, &block)
+  def defer(callback_name, timeout = 30, &block)
     puts "Deferring to #{callback_name}..." if debug?
     @deferreds[callback_name.to_sym] = Thread.new do
 
       begin
 
-        timeout(30) do
+        timeout(timeout) do
           results = instance_eval(&block)
           send(callback_name.to_sym, results)
         end
