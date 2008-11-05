@@ -7,7 +7,7 @@ hydrant.jack!(OAuthPubSubJack)
 hydrant.on_startup do
   defer :unsubscribed do
     begin
-      pubsub.unsubscribe_from("/api/0.1/user/aumptqi5nzs9", @oauth_consumer, @oauth_token)
+      pubsub.unsubscribe_from("/api/0.1/user/#{@oauth_token.token}", @oauth_consumer, @oauth_token)
     rescue Jabber::ServerError => e
       puts e
     end
