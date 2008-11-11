@@ -1,10 +1,8 @@
 #!/usr/bin/env ruby
 require 'fire_hydrant'
 
-hydrant = FireHydrant.new(YAML.load(File.read("fire_hydrant.yml")), false)
-hydrant.jack!(OAuthPubSubJack)
-
-hydrant.on_startup do
+hydrant = FireHydrant.new(YAML.load(File.read("fire_hydrant.yml"))) do
+  # this executes in the main loop, so it doesn't really matter that this runs in a different thread
   defer :subscriptions_received do
     begin
       pubsub.get_subscriptions_from_all_nodes(@oauth_consumer, @general_token)
@@ -19,5 +17,7 @@ hydrant.on_startup do
     puts subscriptions.collect { |subscription| "#{subscription.jid} => #{subscription.node}" } * "\n"
   end
 end
+
+hydrant.jack!(OAuthPubSubJack)
 
 hydrant.run!

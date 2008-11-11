@@ -1,9 +1,7 @@
 #!/usr/bin/env ruby
 require 'fire_hydrant'
 
-hydrant = FireHydrant.new(YAML.load(File.read("fire_hydrant.yml")), false)
-
-hydrant.on_startup do
+hydrant = FireHydrant.new(YAML.load(File.read("fire_hydrant.yml"))) do
   if roster.items.any?
     puts "#{@config[:jid]}'s roster:"
     puts roster.items.keys.map { |jid| jid.to_s } * "\n"

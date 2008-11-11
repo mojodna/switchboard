@@ -21,7 +21,7 @@ class FireHydrant
 
   attr_reader :client, :jacks, :roster
 
-  def initialize(config, spin = true)
+  def initialize(config, spin = true, &block)
     # register a handler for SIGINTs
     trap(:INT) do
       @deferreds.each do |name, deferred|
@@ -29,8 +29,7 @@ class FireHydrant
         deferred.kill
       end
 
-      shutdown
-      exit
+      shutdown!
     end
 
     config = DEFAULTS.merge(config)
@@ -39,6 +38,7 @@ class FireHydrant
     @loop = spin
     @shutdown = false
     @deferreds = {}
+    @main = block if block_given?
 
     # TODO jid may already have a resource, so account for that
     @client = Jabber::Client.new([@config[:jid], @config[:resource]] * "/")
@@ -48,13 +48,16 @@ class FireHydrant
   def run!
     startup
 
-    if loop?
-      sleep 5 while !@shutdown
+    if @main
+      instance_eval(&@main)
+    elsif loop?
+      sleep 5 while !shutdown?
     end
 
     shutdown
   end
 
+  # TODO don't start threads yet; wait until all startup hooks have been run
   def defer(callback_name, timeout = 30, &block)
     puts "Deferring to #{callback_name}..." if debug?
     @deferreds[callback_name.to_sym] = Thread.new do
@@ -279,6 +282,11 @@ protected
     puts "=> Switchboard started."
   end
 
+  def shutdown!
+    puts "Shutdown initiated."
+    @shutdown = true
+  end
+
   def shutdown
     while (pending = @deferreds.select { |k,d| d.alive? }.length) > 0
       puts "Waiting for #{pending} thread(s) to finish" if debug?
@@ -290,5 +298,9 @@ protected
 
     puts "Shutting down..." if debug?
     disconnect
+  end
+
+  def shutdown?
+    @shutdown
   end
 end

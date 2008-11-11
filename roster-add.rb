@@ -1,13 +1,13 @@
 #!/usr/bin/env ruby
 require 'fire_hydrant'
 
-hydrant = FireHydrant.new(YAML.load(File.read("fire_hydrant.yml")), false)
-
-hydrant.on_startup do
+hydrant = FireHydrant.new(YAML.load(File.read("fire_hydrant.yml"))) do
   # add the server as a contact if it wasn't already added
-  if roster.find(@config[:server]).empty?
-    puts "Adding #{@config[:server]} to my roster..."
-    roster.add(@config[:server], nil, true)
+  ARGV.each do |jid|
+    if roster.find(jid).empty?
+      puts "Adding #{jid} to my roster..."
+      roster.add(jid, nil, true)
+    end
   end
 end
 
