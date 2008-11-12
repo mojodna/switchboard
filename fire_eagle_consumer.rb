@@ -4,7 +4,7 @@ require 'fireeagle'
 require 'yaml'
 
 hydrant = FireHydrant.new(YAML.load(File.read("fire_hydrant.yml")), true)
-hydrant.jack!(AutoAcceptJack, NotifyJack, OAuthPubSubJack)
+hydrant.plug!(AutoAcceptJack, NotifyJack, OAuthPubSubJack)
 
 hydrant.on_pubsub_event do |event|
   event.payload.each do |payload|

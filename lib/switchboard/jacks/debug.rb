@@ -1,4 +1,4 @@
-require 'fire_hydrant/colors'
+require 'switchboard/colors'
 
 class DebugJack
   def self.connect(switchboard)
