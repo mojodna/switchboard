@@ -4,8 +4,16 @@ module Switchboard
       description "Get and set global options"
 
       def self.run!
-        puts "Setting #{ARGV.shift} to #{ARGV.shift}"
-        # $HOME/.switchboardrc
+        settings = Switchboard::Settings.new
+        if ARGV.empty?
+          super
+        elsif ARGV.length == 1
+          puts settings.get(ARGV.shift)
+        elsif ARGV.length == 2
+          settings.set!(ARGV.shift, ARGV.shift)
+        else
+          puts "error: More than one value for the key #{ARGV.shift}: #{ARGV * " "}"
+        end
       end
     end
   end

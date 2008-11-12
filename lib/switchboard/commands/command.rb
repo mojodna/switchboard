@@ -44,16 +44,20 @@ module Switchboard
 
     def self.run!
       puts self.options(OptionParser.new).help
-      puts
-      puts "Available commands:"
-      Switchboard.commands(self).each do |name, command|
-        puts "   #{command.to_command.ljust(15)}#{command.description}"
-        command.options(OptionParser.new).summarize do |line|
-          puts " " * 16 + line
+      commands = Switchboard.commands(self)
+
+      if commands.any?
+        puts
+        puts "Available commands:"
+        commands.each do |name, command|
+          puts "   #{command.to_command.ljust(15)}#{command.description}"
+          command.options(OptionParser.new).summarize do |line|
+            puts " " * 16 + line
+          end
         end
+        puts
+        puts "See '#{@options.program_name} help COMMAND' for more information on a specific command."
       end
-      puts
-      puts "See '#{@options.program_name} help COMMAND' for more information on a specific command."
     end
 
     def self.to_command
