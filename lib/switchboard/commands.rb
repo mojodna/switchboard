@@ -1,3 +1,6 @@
 require 'switchboard/commands/command'
+require 'switchboard/commands/config'
+require 'switchboard/commands/default'
+require 'switchboard/commands/help'
 require 'switchboard/commands/pubsub'
 require 'switchboard/commands/roster'

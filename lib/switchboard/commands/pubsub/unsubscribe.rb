@@ -1,24 +1,23 @@
 module Switchboard
   module Commands
     class PubSub
-      class Subscriptions < Switchboard::Command
-        description "List pubsub subscriptions"
+      class Unsubscribe < Switchboard::Command
+        description "Unsubscribe from a pubsub node"
 
         def self.run!
           switchboard = Switchboard::Core.new(YAML.load(File.read("fire_hydrant.yml"))) do
             # this executes in the main loop, so it doesn't really matter that this runs in a different thread
-            defer :subscriptions_received do
+            defer :unsubscribed do
               begin
-                pubsub.get_subscriptions_from_all_nodes(@oauth_consumer, @general_token)
+                pubsub.unsubscribe_from("/api/0.1/user/#{@oauth_token.token}", @oauth_consumer, @oauth_token)
               rescue Jabber::ServerError => e
                 puts e
               end
             end
 
             # define here or as hydrant.subscriptions_received
-            def subscriptions_received(subscriptions)
-              puts "Subscriptions:"
-              puts subscriptions.collect { |subscription| "#{subscription.jid} => #{subscription.node}" } * "\n"
+            def unsubscribed(successful)
+              puts "Unsubscribe was successful." if successful
             end
           end
 

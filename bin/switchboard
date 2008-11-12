@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+require 'switchboard'
+require 'optparse'
+
+command = ARGV.clone.options do |opts|
+  # opts.banner = "Usage: example.rb [options]"
+
+  command = Switchboard::Commands::Default
+  command.options(opts)
+
+  cmd = []
+  argv = []
+
+  # force optparse into being a command parser
+  opts.order! do |arg|
+    cmd << arg
+
+    if c = Switchboard::COMMANDS[cmd * "_"]
+      command = c
+      command.options(opts)
+    elsif c = Switchboard::COMMANDS["_" + cmd * "_"]
+      command = c
+    else
+      # unrecognized, unclaimed argument; keep as ARGV
+      argv << arg
+    end
+  end
+
+  # correct ARGV to match unrecognized, unclaimed arguments
+  ARGV.reject! { |v| !argv.include?(v) }
+
+  command
+end
+
+command.run!
