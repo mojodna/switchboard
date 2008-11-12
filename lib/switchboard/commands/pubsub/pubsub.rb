@@ -9,7 +9,7 @@ module Switchboard
 
       def self.options(opts)
         super(opts)
-        opts.on("--oauth", "Sign requests using OAuth.") { OPTIONS[:oauth] = true }
+        # opts.on("--oauth", "Sign requests using OAuth.") { OPTIONS[:oauth] = true }
       end
     end
   end

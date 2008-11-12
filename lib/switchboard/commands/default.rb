@@ -1,9 +1,11 @@
 module Switchboard
   class Command
-    OPTIONS = {
+    OPTIONS = {}
+    DEFAULT_OPTIONS = {
       # :detach  => false,
-      :oauth   => false,
-      # :verbose => false
+      "debug"    => false,
+      "oauth"    => false,
+      "resource" => "switchboard"
     }
   end
   module Commands

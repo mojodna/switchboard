@@ -6,12 +6,12 @@ module Switchboard
 
         def self.options(opts)
           super(opts)
-          opts.on("-l", "--log=path", String, "Specifies a path to log script output.") { |v| OPTIONS[:log] = v }
+          # opts.on("-l", "--log=path", String, "Specifies a path to log script output.") { |v| OPTIONS[:log] = v }
         end
 
         def self.run!
-          # TODO get settings from elsewhere
-          switchboard = Switchboard::Core.new(YAML.load(File.read("fire_hydrant.yml"))) do
+          # TODO override settings with values from the command line
+          switchboard = Switchboard::Core.new do
             ARGV.each do |jid|
               if (items = roster.find(jid)).any?
                 item = items.values.first

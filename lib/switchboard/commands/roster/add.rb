@@ -5,8 +5,8 @@ module Switchboard
         description "Add a JID to your roster"
 
         def self.run!
-          # TODO get settings from elsewhere
-          switchboard = Switchboard::Core.new(YAML.load(File.read("fire_hydrant.yml"))) do
+          # TODO override settings with values from the command line
+          switchboard = Switchboard::Core.new do
             # add the server as a contact if it wasn't already added
             ARGV.each do |jid|
               if roster.find(jid).empty?
@@ -16,7 +16,7 @@ module Switchboard
             end
           end
 
-          switchboard.plug!(AutoAcceptJack, DebugJack, RosterDebugJack)
+          switchboard.plug!(AutoAcceptJack)
 
           switchboard.run!
         end

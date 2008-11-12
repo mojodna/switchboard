@@ -5,13 +5,13 @@ module Switchboard
         description "List all roster items"
 
         def self.run!
-          # TODO get settings from elsewhere
-          switchboard = Switchboard::Core.new(YAML.load(File.read("fire_hydrant.yml"))) do
+          # TODO override settings with values from the command line
+          switchboard = Switchboard::Core.new do
             if roster.items.any?
-              puts "#{config[:jid]}'s roster:"
+              puts "#{settings["jid"]}'s roster:"
               puts roster.items.keys.map { |jid| jid.to_s } * "\n"
             else
-              puts "#{config[:jid]}'s roster is empty."
+              puts "#{settings["jid"]}'s roster is empty."
             end
           end
 

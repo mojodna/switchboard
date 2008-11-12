@@ -16,14 +16,10 @@ require 'xmpp4r/roster'
 module Switchboard
   class Core
     include Timeout
-    DEFAULTS = {
-      :debug    => false,
-      :resource => "switchboard"
-    }
 
-    attr_reader :client, :config, :jacks, :roster
+    attr_reader :client, :jacks, :roster, :settings
 
-    def initialize(config, spin = true, &block)
+    def initialize(settings = Switchboard::Settings.new, spin = true, &block)
       # register a handler for SIGINTs
       trap(:INT) do
         # exit on a second ^C
@@ -39,16 +35,14 @@ module Switchboard
         shutdown!
       end
 
-      config = DEFAULTS.merge(config)
-
-      @config = Hash[*config.collect { |k,v| [k.to_sym, v] }.flatten]
+      @settings = settings
       @loop = spin
       @shutdown = false
       @deferreds = {}
       @main = block if block_given?
 
       # TODO jid may already have a resource, so account for that
-      @client = Jabber::Client.new([@config[:jid], @config[:resource]] * "/")
+      @client = Jabber::Client.new([settings["jid"], settings["resource"]] * "/")
     end
 
     # Turn the hydrant on.
@@ -161,7 +155,7 @@ module Switchboard
 
     def connect!
       client.connect
-      client.auth(@config[:password])
+      client.auth(settings["password"])
       @roster = Jabber::Roster::Helper.new(client)
     end
 
@@ -170,7 +164,7 @@ module Switchboard
     end
 
     def debug?
-      @config[:debug]
+      settings["debug"]
     end
 
     def disconnect

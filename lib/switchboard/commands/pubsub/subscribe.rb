@@ -5,11 +5,12 @@ module Switchboard
         description "Subscribe to a pubsub node"
 
         def self.run!
-          switchboard = Switchboard::Core.new(YAML.load(File.read("fire_hydrant.yml"))) do
+          # TODO override settings with values from the command line
+          switchboard = Switchboard::Core.new do
             # this executes in the main loop, so it doesn't really matter that this runs in a different thread
             defer :subscribed do
               begin
-                pubsub.subscribe_to("/api/0.1/user/#{@oauth_token.token}", @oauth_consumer, @oauth_token)
+                pubsub.subscribe_to("/api/0.1/user/#{settings["oauth.token"]}", oauth_consumer, oauth_token)
               rescue Jabber::ServerError => e
                 puts e
               end

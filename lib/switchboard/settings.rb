@@ -13,8 +13,10 @@ module Switchboard
     end
 
     def get(key)
-      @config[key]
+      Switchboard::Command::OPTIONS[key] || @config[key] || Switchboard::Command::DEFAULT_OPTIONS[key]
     end
+
+    alias_method :[], :get
 
     def set!(key, value)
       @config[key] = value

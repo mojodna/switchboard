@@ -5,11 +5,12 @@ module Switchboard
         description "List pubsub subscriptions"
 
         def self.run!
-          switchboard = Switchboard::Core.new(YAML.load(File.read("fire_hydrant.yml"))) do
+          # TODO override settings with values from the command line
+          switchboard = Switchboard::Core.new do
             # this executes in the main loop, so it doesn't really matter that this runs in a different thread
             defer :subscriptions_received do
               begin
-                pubsub.get_subscriptions_from_all_nodes(@oauth_consumer, @general_token)
+                pubsub.get_subscriptions_from_all_nodes(oauth_consumer, general_token)
               rescue Jabber::ServerError => e
                 puts e
               end
