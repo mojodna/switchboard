@@ -1,9 +1,9 @@
 module Switchboard
   class Command
     OPTIONS = {
-      :detach  => false,
+      # :detach  => false,
       :oauth   => false,
-      :verbose => false
+      # :verbose => false
     }
   end
   module Commands
@@ -15,16 +15,16 @@ module Switchboard
 
         opts.banner = "Usage: #{opts.program_name} [options] COMMAND [options] [args]"
 
-        opts.on("-d", "--daemon", "Make server run as a daemon.") { OPTIONS[:detach] = true }
+        # opts.on("-d", "--daemon", "Make server run as a daemon.") { OPTIONS[:detach] = true }
         # opts.on("-l", "--log=path", String, "Specifies a path to log script output.") { |v| OPTIONS[:log] = v }
         # opts.on("-p", "--pidfile=path", String,
         #         "Specifies a pidfile to use.") { |v| OPTIONS[:pidfile] = v }
-        opts.on("-v", "--[no-]verbose", "Run verbosely") { |v| OPTIONS[:verbose] = v }
+        # opts.on("-v", "--[no-]verbose", "Run verbosely") { |v| OPTIONS[:verbose] = v }
 
         opts.separator ""
 
         opts.on_tail("-h", "--help", "Show this help message.") { puts opts; exit }
-        opts.on_tail("--version", "Show version") { puts VERSION; exit }
+        opts.on_tail("--version", "Show version") { puts "switchboard version #{Switchboard::VERSION * "."}"; exit }
       end
 
       def self.run!
