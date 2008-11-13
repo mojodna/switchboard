@@ -7,19 +7,12 @@ command-line tools for interacting with XMPP servers.
 
 Install it:
 
-    $ gem install mojodna-switchboard -s http://gems.github.com
+    $ sudo gem install mojodna-switchboard -s http://gems.github.com
 
 Configure it:
 
     $ switchboard config jid jid@example.com
     $ switchboard config password pa55word
-    $ switchboard config oauth.consumer_key asdf
-    $ switchboard config oauth.consumer_secret qwerty
-    $ switchboard config oauth.token asdf
-    $ switchboard config oauth.token_secret qwerty
-    $ switchboard config oauth.general_token asdf
-    $ switchboard config oauth.general_token_secret qwerty
-    $ switchboard config pubsub.server fireeagle.com
 
 _Settings will be stored in `$HOME/.switchboardrc`_
 
