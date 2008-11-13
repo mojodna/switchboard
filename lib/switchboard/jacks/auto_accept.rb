@@ -1,5 +1,5 @@
 class AutoAcceptJack
-  def self.connect(switchboard)
+  def self.connect(switchboard, settings)
     # complain if subscription requests were denied
     switchboard.on_roster_subscription do |item, subscription|
       unless subscription.type == :subscribed

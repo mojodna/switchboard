@@ -1,5 +1,5 @@
 class RosterDebugJack
-  def self.connect(switchboard)
+  def self.connect(switchboard, settings)
     switchboard.on_roster_presence do |item, old_presence, new_presence|
       puts "[presence] << #{item.inspect}: #{old_presence.to_s}, #{new_presence.to_s}"
     end

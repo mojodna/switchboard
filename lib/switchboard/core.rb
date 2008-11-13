@@ -91,7 +91,11 @@ module Switchboard
       jacks.each do |jack|
         puts "Connecting jack: #{jack}" if debug?
         @jacks << jack
-        jack.connect(self)
+        if jack.connect(self, settings) == false
+          puts "A jack was unable to connect. Shutting down..."
+          shutdown(false)
+          exit 1
+        end
       end
     end
 

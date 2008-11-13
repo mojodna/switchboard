@@ -1,7 +1,7 @@
 require 'switchboard/colors'
 
 class DebugJack
-  def self.connect(switchboard)
+  def self.connect(switchboard, settings)
     switchboard.on_presence do |presence|
       puts "<< #{presence.to_s}".green
     end

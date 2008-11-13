@@ -1,5 +1,5 @@
 class NotifyJack
-  def self.connect(switchboard)
+  def self.connect(switchboard, settings)
     switchboard.on_roster_loaded do
       roster.items.each do |jid, item|
         presence(nil, jid)

@@ -1,17 +1,6 @@
-require 'rubygems'
-begin
-  require 'oauth'
-rescue LoadError => e
-  gem = e.message.split("--").last.strip
-  puts "The #{gem} gem is required."
-end
-
-require 'oauth/consumer'
-require 'oauth/request_proxy/mock_request'
 require 'xmpp4r/pubsub'
-require 'xmpp4r/pubsub/helper/oauth_service_helper'
 
-class OAuthPubSubJack
+class PubSubJack
   def self.connect(switchboard, settings)
     # TODO generalize this pattern for required settings
     unless settings["pubsub.server"]
@@ -20,12 +9,7 @@ class OAuthPubSubJack
     end
 
     switchboard.on_startup do
-      @pubsub = Jabber::PubSub::OAuthServiceHelper.new(client, settings["pubsub.server"])
-
-      @oauth_consumer = OAuth::Consumer.new(settings["oauth.consumer_key"], settings["oauth.consumer_secret"])
-      @oauth_token = OAuth::Token.new(settings["oauth.token"], settings["oauth.token_secret"])
-      # this is Fire Eagle-specific
-      @general_token = OAuth::Token.new(settings["oauth.general_token"], settings["oauth.general_token_secret"])
+      @pubsub = Jabber::PubSub::ServiceHelper.new(client, settings["pubsub.server"])
 
       @pubsub.add_event_callback do |event|
         on(:pubsub_event, event)
