@@ -18,8 +18,8 @@ module Switchboard
         opts.banner = "Usage: #{opts.program_name} [options] COMMAND [options] [args]"
 
         # opts.on("-d", "--daemon", "Make server run as a daemon.") { OPTIONS[:detach] = true }
-        opts.on("-j", "--jid=jid", String, "Specifies the JID to use.") { |v| OPTIONS[:jid] = v }
-        opts.on("-p", "--password=password", String, "Specifies the password to use.") { |v| OPTIONS[:password] = v }
+        opts.on("-j", "--jid=jid", String, "Specifies the JID to use.") { |v| OPTIONS["jid"] = v }
+        opts.on("-p", "--password=password", String, "Specifies the password to use.") { |v| OPTIONS["password"] = v }
         # opts.on("-p", "--pidfile=path", String,
         #         "Specifies a pidfile to use.") { |v| OPTIONS[:pidfile] = v }
         # opts.on("-v", "--[no-]verbose", "Run verbosely") { |v| OPTIONS[:verbose] = v }
