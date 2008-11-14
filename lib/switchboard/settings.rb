@@ -19,8 +19,16 @@ module Switchboard
     alias_method :[], :get
 
     def set!(key, value)
-      @config[key] = value
+      set(key, value)
       write
+    end
+
+    def set(key, value)
+      @config[key] = value
+    end
+
+    def []=(key, value)
+      set(key, value)
     end
 
     def write
