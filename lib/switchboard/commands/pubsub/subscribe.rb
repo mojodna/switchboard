@@ -5,12 +5,11 @@ module Switchboard
         description "Subscribe to a pubsub node"
 
         def self.run!
-          # TODO override settings with values from the command line
           switchboard = Switchboard::Core.new do
             # this executes in the main loop, so it doesn't really matter that this runs in a different thread
             defer :subscribed do
               begin
-                pubsub.subscribe_to("/api/0.1/user/#{settings["oauth.token"]}", oauth_consumer, oauth_token)
+                subscribe_to(settings["pubsub.node"])
               rescue Jabber::ServerError => e
                 puts e
               end
@@ -26,7 +25,11 @@ module Switchboard
             end
           end
 
-          switchboard.plug!(OAuthPubSubJack)
+          if OPTIONS["oauth"]
+            switchboard.plug!(OAuthPubSubJack)
+          else
+            switchboard.plug!(PubSubJack)
+          end
           switchboard.run!
         end
       end

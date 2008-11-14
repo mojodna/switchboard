@@ -16,6 +16,18 @@ class PubSubJack
       end
     end
 
+    def switchboard.subscribe_to(node)
+      pubsub.subscribe_to(node)
+    end
+
+    def switchboard.subscriptions
+      pubsub.get_subscriptions_from_all_nodes
+    end
+
+    def switchboard.unsubscribe_from(node)
+      pubsub.unsubscribe_from(node)
+    end
+
     # TODO add the ability to define accessors
     def switchboard.general_token
       @general_token

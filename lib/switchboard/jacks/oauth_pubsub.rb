@@ -11,6 +11,7 @@ require 'oauth/request_proxy/mock_request'
 require 'xmpp4r/pubsub'
 require 'xmpp4r/pubsub/helper/oauth_service_helper'
 
+# TODO subclass PubSubJack
 class OAuthPubSubJack
   def self.connect(switchboard, settings)
     # TODO generalize this pattern for required settings
@@ -24,12 +25,22 @@ class OAuthPubSubJack
 
       @oauth_consumer = OAuth::Consumer.new(settings["oauth.consumer_key"], settings["oauth.consumer_secret"])
       @oauth_token = OAuth::Token.new(settings["oauth.token"], settings["oauth.token_secret"])
-      # this is Fire Eagle-specific
-      @general_token = OAuth::Token.new(settings["oauth.general_token"], settings["oauth.general_token_secret"])
 
       @pubsub.add_event_callback do |event|
         on(:pubsub_event, event)
       end
+    end
+
+    def switchboard.subscribe_to(node)
+      pubsub.subscribe_to(node, oauth_consumer, oauth_token)
+    end
+
+    def switchboard.subscriptions
+      pubsub.get_subscriptions_from_all_nodes(oauth_consumer, general_token)
+    end
+
+    def switchboard.unsubscribe_from(node)
+      pubsub.unsubscribe_from(node, oauth_consumer, oauth_token)
     end
 
     # TODO add the ability to define accessors

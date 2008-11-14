@@ -5,12 +5,11 @@ module Switchboard
         description "List pubsub subscriptions"
 
         def self.run!
-          # TODO override settings with values from the command line
           switchboard = Switchboard::Core.new do
             # this executes in the main loop, so it doesn't really matter that this runs in a different thread
             defer :subscriptions_received do
               begin
-                pubsub.get_subscriptions_from_all_nodes(oauth_consumer, general_token)
+                subscriptions
               rescue Jabber::ServerError => e
                 puts e
               end
@@ -18,12 +17,20 @@ module Switchboard
 
             # define here or as hydrant.subscriptions_received
             def subscriptions_received(subscriptions)
-              puts "Subscriptions:"
-              puts subscriptions.collect { |subscription| "#{subscription.jid} => #{subscription.node}" } * "\n"
+              if subscriptions && subscriptions.any?
+                puts "Subscriptions:"
+                puts subscriptions.collect { |subscription| "#{subscription.jid} => #{subscription.node}" } * "\n"
+              else
+                puts "No subscriptions."
+              end
             end
           end
 
-          switchboard.plug!(OAuthPubSubJack)
+          if OPTIONS["oauth"]
+            switchboard.plug!(OAuthPubSubJack)
+          else
+            switchboard.plug!(PubSubJack)
+          end
           switchboard.run!
         end
       end
