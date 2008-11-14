@@ -36,7 +36,7 @@ class OAuthPubSubJack
     end
 
     def switchboard.subscriptions
-      pubsub.get_subscriptions_from_all_nodes(oauth_consumer, general_token)
+      pubsub.get_subscriptions_from_all_nodes(oauth_consumer, oauth_token)
     end
 
     def switchboard.unsubscribe_from(node)

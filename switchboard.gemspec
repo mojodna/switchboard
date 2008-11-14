@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name = "switchboard"
   s.version = "0.0.3"
-  s.summary = "XMPP toolkit"
+  s.summary = "XMPP toolkit."
   s.description = "A toolkit for assembling XMPP clients and interacting with XMPP servers."
   s.authors = ["Seth Fitzsimmons"]
   s.email = ["seth@mojodna.net"]
