@@ -157,10 +157,18 @@ module Switchboard
 
   protected
 
-    def connect!
-      client.connect
+    def auth!
       client.auth(settings["password"])
       @roster = Jabber::Roster::Helper.new(client)
+    rescue Jabber::ClientAuthenticationFailure => e
+      puts "Could not authenticate as #{settings["jid"]}"
+      shutdown(false)
+      exit 1
+    end
+
+    def connect!
+      client.connect
+      auth!
     end
 
     def connected?
