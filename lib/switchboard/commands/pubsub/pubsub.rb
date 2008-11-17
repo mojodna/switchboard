@@ -8,7 +8,6 @@ module Switchboard
       end
 
       def self.options(opts)
-        super(opts)
         opts.on("--node=node", String, "Specifies the PubSub node to use.") { |v| OPTIONS["pubsub.node"] = v }
         opts.on("--oauth", "Sign requests using OAuth.") { OPTIONS["oauth"] = true }
         opts.on("--oauth-consumer-key=consumer-key", String, "Specifies the OAuth consumer key to use.") { |v| OPTIONS["oauth.consumer_key"] = v }

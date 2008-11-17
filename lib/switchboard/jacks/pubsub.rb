@@ -20,6 +20,10 @@ class PubSubJack
       pubsub.create_node(node)
     end
 
+    def switchboard.get_items_from(node, count = nil)
+      pubsub.get_items_from(node)
+    end
+
     def switchboard.publish_item_to(node, item)
       pubsub.publish_item_to(node, item)
     end
