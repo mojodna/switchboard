@@ -2,7 +2,7 @@
 require 'switchboard'
 require 'optparse'
 
-command = ARGV.clone.options do |opts|
+ARGV.clone.options do |opts|
   # opts.banner = "Usage: example.rb [options]"
 
   command = Switchboard::Commands::Default
@@ -30,6 +30,4 @@ command = ARGV.clone.options do |opts|
   ARGV.reject! { |v| !argv.include?(v) }
 
   command
-end
-
-command.run!
+end.run!

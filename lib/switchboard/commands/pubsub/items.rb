@@ -5,6 +5,7 @@ module Switchboard
         description "Get items from a pubsub node"
 
         def self.options(opts)
+          super(opts)
           opts.on("--item-count=count", Integer, "Specifies the number of items to retrieve.") { |v| OPTIONS["pubsub.items.count"] = v }
         end
 
