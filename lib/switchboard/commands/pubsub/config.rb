@@ -20,6 +20,8 @@ module Switchboard
                 config.options.each do |k,v|
                   puts "  " + [k, v] * ": "
                 end
+              else
+                puts "Could not load configuration for node '#{OPTIONS["pubsub.node"]}'."
               end
             end
           end
