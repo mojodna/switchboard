@@ -19,7 +19,7 @@ module Switchboard
             def subscriptions_received(subscriptions)
               if subscriptions && subscriptions.any?
                 puts "Subscriptions:"
-                puts subscriptions.collect { |subscription| "#{subscription.jid} => #{subscription.node}" } * "\n"
+                puts subscriptions.collect { |subscription| "#{subscription.jid || settings["jid"]} => #{subscription.node}" } * "\n"
               else
                 puts "No subscriptions."
               end
