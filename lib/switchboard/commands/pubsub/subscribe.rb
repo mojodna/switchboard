@@ -17,10 +17,10 @@ module Switchboard
 
             # define here or as hydrant.subscriptions_received
             def subscribed(subscription)
-              if subscription.subscription == :subscribed
+              if subscription && subscription.subscription == :subscribed
                 puts "Subscribe successful."
               else
-                puts "Subscribe failed!".red
+                puts "Subscribe failed!"
               end
             end
           end
