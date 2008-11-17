@@ -54,6 +54,10 @@ class PubSubJack
       pubsub.purge_items_from(node)
     end
 
+    def switchboard.set_config_for(node, config)
+      pubsub.set_config_for(node, config)
+    end
+
     def switchboard.subscribe_to(node)
       pubsub.subscribe_to(node)
     end

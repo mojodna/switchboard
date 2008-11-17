@@ -8,6 +8,13 @@ module Switchboard
           switchboard = Switchboard::Core.new do
             defer :configuration_retrieved do
               begin
+                if ARGV.length == 2
+                  key, value = ARGV
+                  puts "Setting '#{key}' to '#{value}'"
+                  config = Jabber::PubSub::NodeConfig.new(OPTIONS["pubsub.node"], key => value)
+                  set_config_for(OPTIONS["pubsub.node"], config)
+                end
+
                 get_config_from(OPTIONS["pubsub.node"])
               rescue Jabber::ServerError => e
                 puts e
