@@ -4,6 +4,10 @@ module Switchboard
       description "Register a JID"
 
       class Registration < Switchboard::Core
+        def initialize(settings = Switchboard::Settings.new, spin = false)
+          super(settings, false)
+        end
+
       protected
 
         def auth!
