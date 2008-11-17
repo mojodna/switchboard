@@ -8,7 +8,7 @@ module Switchboard
           switchboard = Switchboard::Core.new do
             defer :node_created do
               begin
-                pubsub.create_node(OPTIONS["pubsub.node"])
+                create_node(OPTIONS["pubsub.node"])
               rescue Jabber::ServerError => e
                 puts e
               end

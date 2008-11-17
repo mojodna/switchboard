@@ -31,6 +31,11 @@ class OAuthPubSubJack
       end
     end
 
+    def switchboard.create_node(node)
+      # TODO this needs to be implemented in OAuthServiceHelper
+      pubsub.create_node(node, oauth_consumer, oauth_token)
+    end
+
     def switchboard.subscribe_to(node)
       pubsub.subscribe_to(node, oauth_consumer, oauth_token)
     end

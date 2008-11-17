@@ -16,6 +16,10 @@ class PubSubJack
       end
     end
 
+    def switchboard.create_node(node)
+      pubsub.create_node(node)
+    end
+
     def switchboard.subscribe_to(node)
       pubsub.subscribe_to(node)
     end
