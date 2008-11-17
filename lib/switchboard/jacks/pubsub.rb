@@ -20,6 +20,10 @@ class PubSubJack
       pubsub.create_node(node)
     end
 
+    def switchboard.delete_node(node)
+      pubsub.delete_node(node)
+    end
+
     def switchboard.get_config_from(node)
       pubsub.get_config_from(node)
     end
