@@ -28,6 +28,10 @@ class PubSubJack
       pubsub.get_config_from(node)
     end
 
+    def switchboard.get_options_from(node, jid)
+      pubsub.get_options_from(node, jid)
+    end
+
     def switchboard.get_items_from(node, count = nil)
       pubsub.get_items_from(node)
     end

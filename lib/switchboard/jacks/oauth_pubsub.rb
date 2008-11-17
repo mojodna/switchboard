@@ -51,6 +51,11 @@ class OAuthPubSubJack
       pubsub.get_items_from(node, oauth_consumer, oauth_token)
     end
 
+    def switchboard.get_options_from(node, jid)
+      # TODO this needs to be implemented in OAuthServiceHelper
+      pubsub.get_options_from(node, jid, oauth_consumer, oauth_token)
+    end
+
     def switchboard.publish_item_to(node, item)
       # TODO this needs to be implemented in OAuthServiceHelper
       pubsub.publish_item_to(node, item, oauth_consumer, oauth_token)
