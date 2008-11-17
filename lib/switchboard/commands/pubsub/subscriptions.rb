@@ -9,7 +9,7 @@ module Switchboard
             # this executes in the main loop, so it doesn't really matter that this runs in a different thread
             defer :subscriptions_received do
               begin
-                subscriptions
+                subscriptions(settings["pubsub.node"])
               rescue Jabber::ServerError => e
                 puts e
               end

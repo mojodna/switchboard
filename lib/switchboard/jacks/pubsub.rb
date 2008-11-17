@@ -20,8 +20,13 @@ class PubSubJack
       pubsub.subscribe_to(node)
     end
 
-    def switchboard.subscriptions
-      pubsub.get_subscriptions_from_all_nodes
+    # NOTE: node-specific subscriptions do not appear to work in ejabberd 2.0.2
+    def switchboard.subscriptions(node = nil)
+      if node
+        pubsub.get_subscriptions_from(node)
+      else
+        pubsub.get_subscriptions_from_all_nodes
+      end
     end
 
     def switchboard.unsubscribe_from(node)

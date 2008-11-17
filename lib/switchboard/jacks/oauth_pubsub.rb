@@ -35,8 +35,13 @@ class OAuthPubSubJack
       pubsub.subscribe_to(node, oauth_consumer, oauth_token)
     end
 
-    def switchboard.subscriptions
-      pubsub.get_subscriptions_from_all_nodes(oauth_consumer, oauth_token)
+    def switchboard.subscriptions(node = nil)
+      if node
+        # TODO this needs to be implemented in OAuthServiceHelper
+        pubsub.get_subscriptions_from(node, oauth_consumer, oauth_token)
+      else
+        pubsub.get_subscriptions_from_all_nodes(oauth_consumer, oauth_token)
+      end
     end
 
     def switchboard.unsubscribe_from(node)
