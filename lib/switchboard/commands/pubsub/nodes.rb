@@ -3,7 +3,7 @@ module Switchboard
     class PubSub
       class Nodes < Switchboard::Command
         hide! # Jabber::PubSub::NodeBrowser is broken in xmpp4r-0.4.0
-        description "Lists available pubsub nodes (use pubsub.<server>)"
+        description "Lists available pubsub nodes (maybe use pubsub.<server>)"
 
         def self.run!
           switchboard = Switchboard::Core.new do
