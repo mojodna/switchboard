@@ -20,6 +20,10 @@ class PubSubJack
       pubsub.create_node(node)
     end
 
+    def switchboard.get_config_from(node)
+      pubsub.get_config_from(node)
+    end
+
     def switchboard.get_items_from(node, count = nil)
       pubsub.get_items_from(node)
     end

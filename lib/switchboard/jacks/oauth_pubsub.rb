@@ -36,6 +36,11 @@ class OAuthPubSubJack
       pubsub.create_node(node, oauth_consumer, oauth_token)
     end
 
+    def switchboard.get_config_from(node)
+      # TODO this needs to be implemented in OAuthServiceHelper
+      pubsub.get_config_from(node, oauth_consumer, oauth_token)
+    end
+
     def switchboard.get_items_from(node, count = nil)
       # TODO this needs to be implemented in OAuthServiceHelper
       pubsub.get_items_from(node, oauth_consumer, oauth_token)

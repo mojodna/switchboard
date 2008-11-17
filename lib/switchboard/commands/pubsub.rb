@@ -1,5 +1,6 @@
 require 'switchboard/commands/pubsub/pubsub'
 require 'switchboard/commands/pubsub/affiliations'
+require 'switchboard/commands/pubsub/config'
 require 'switchboard/commands/pubsub/create'
 require 'switchboard/commands/pubsub/items'
 require 'switchboard/commands/pubsub/listen'
