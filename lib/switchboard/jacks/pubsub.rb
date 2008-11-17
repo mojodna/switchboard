@@ -1,4 +1,6 @@
 require 'xmpp4r/pubsub'
+# TODO this should be included in the above
+require 'xmpp4r/pubsub/helper/nodebrowser'
 
 class PubSubJack
   def self.connect(switchboard, settings)
