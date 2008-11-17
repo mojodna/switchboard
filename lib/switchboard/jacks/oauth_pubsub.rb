@@ -41,6 +41,11 @@ class OAuthPubSubJack
       pubsub.publish_item_to(node, item, oauth_consumer, oauth_token)
     end
 
+    def switchboard.purge_items_from(node)
+      # TODO this needs to be implemented in OAuthServiceHelper
+      pubsub.purge_items_from(node, oauth_consumer, oauth_token)
+    end
+
     def switchboard.subscribe_to(node)
       pubsub.subscribe_to(node, oauth_consumer, oauth_token)
     end
