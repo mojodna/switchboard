@@ -40,6 +40,10 @@ class PubSubJack
       pubsub.publish_item_to(node, item)
     end
 
+    def switchboard.publish_item_with_id_to(node, item, id)
+      pubsub.publish_item_with_id_to(node, item, id)
+    end
+
     def switchboard.purge_items_from(node)
       pubsub.purge_items_from(node)
     end

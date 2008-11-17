@@ -4,13 +4,22 @@ module Switchboard
       class Publish < Switchboard::Command
         description "Publish to a pubsub node"
 
+        def self.options(opts)
+          super(opts)
+          opts.on("--item-id=id", String, "Specifies the item id to use.") { |v| OPTIONS["pubsub.publish.id"] = v }
+        end
+
         def self.run!
           switchboard = Switchboard::Core.new do
             defer :item_published do
               begin
                 item = Jabber::PubSub::Item.new
                 item.text = STDIN.read
-                publish_item_to(OPTIONS["pubsub.node"], item)
+                if OPTIONS["pubsub.publish.id"]
+                  publish_item_with_id_to(OPTIONS["pubsub.node"], item, OPTIONS["pubsub.publish.id"])
+                else
+                  publish_item_to(OPTIONS["pubsub.node"], item)
+                end
               rescue Jabber::ServerError => e
                 puts e
               end
