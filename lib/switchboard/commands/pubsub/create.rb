@@ -16,7 +16,7 @@ module Switchboard
 
             def node_created(name)
               if name
-                puts "Node #{name} was created."
+                puts "Node '#{name}' was created."
               else
                 puts "An auto-named node was created."
               end
