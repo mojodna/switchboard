@@ -36,6 +36,11 @@ class OAuthPubSubJack
       pubsub.create_node(node, oauth_consumer, oauth_token)
     end
 
+    def switchboard.create_collection_node(node)
+      # TODO this needs to be implemented in OAuthServiceHelper
+      pubsub.create_collection_node(node, oauth_consumer, oauth_token)
+    end
+
     def switchboard.delete_node(node)
       # TODO this needs to be implemented in OAuthServiceHelper
       pubsub.delete_node(node, oauth_consumer, oauth_token)

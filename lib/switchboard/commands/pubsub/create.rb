@@ -4,11 +4,20 @@ module Switchboard
       class Create < Switchboard::Command
         description "Creates a pubsub node"
 
+        def self.options(opts)
+          super(opts)
+          opts.on("--collection", "Specifies that a 'collection' node should be created.") { |v| OPTIONS["pubsub.create.node_type"] = "collection" }
+        end
+
         def self.run!
           switchboard = Switchboard::Core.new do
             defer :node_created do
               begin
-                create_node(OPTIONS["pubsub.node"])
+                if OPTIONS["pubsub.create.node_type"] == "collection"
+                  create_collection_node(OPTIONS["pubsub.node"])
+                else
+                  create_node(OPTIONS["pubsub.node"])
+                end
               rescue Jabber::ServerError => e
                 puts e
               end

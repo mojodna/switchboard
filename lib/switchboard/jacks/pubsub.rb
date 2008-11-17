@@ -20,6 +20,10 @@ class PubSubJack
       pubsub.create_node(node)
     end
 
+    def switchboard.create_collection_node(node)
+      pubsub.create_collection_node(node)
+    end
+
     def switchboard.delete_node(node)
       pubsub.delete_node(node)
     end
