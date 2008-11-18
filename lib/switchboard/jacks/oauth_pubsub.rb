@@ -1,15 +1,4 @@
-require 'rubygems'
-begin
-  require 'oauth'
-rescue LoadError => e
-  gem = e.message.split("--").last.strip
-  puts "The #{gem} gem is required."
-end
-
-require 'oauth/consumer'
-require 'oauth/request_proxy/mock_request'
-require 'xmpp4r/pubsub'
-require 'xmpp4r/pubsub/helper/oauth_service_helper'
+require 'switchboard/helpers/oauth_pubsub'
 
 # TODO subclass PubSubJack
 class OAuthPubSubJack
@@ -20,6 +9,8 @@ class OAuthPubSubJack
       return false
     end
 
+    switchboard.extend(Switchboard::Helpers::OAuthPubSubHelper)
+
     switchboard.on_startup do
       @pubsub = Jabber::PubSub::OAuthServiceHelper.new(client, settings["pubsub.server"])
 
@@ -29,90 +20,6 @@ class OAuthPubSubJack
       @pubsub.add_event_callback do |event|
         on(:pubsub_event, event)
       end
-    end
-
-    def switchboard.create_node(node)
-      # TODO this needs to be implemented in OAuthServiceHelper
-      pubsub.create_node(node, oauth_consumer, oauth_token)
-    end
-
-    def switchboard.create_collection_node(node)
-      # TODO this needs to be implemented in OAuthServiceHelper
-      pubsub.create_collection_node(node, oauth_consumer, oauth_token)
-    end
-
-    def switchboard.delete_node(node)
-      # TODO this needs to be implemented in OAuthServiceHelper
-      pubsub.delete_node(node, oauth_consumer, oauth_token)
-    end
-
-    def switchboard.get_config_from(node)
-      # TODO this needs to be implemented in OAuthServiceHelper
-      pubsub.get_config_from(node, oauth_consumer, oauth_token)
-    end
-
-    def switchboard.get_items_from(node, count = nil)
-      # TODO this needs to be implemented in OAuthServiceHelper
-      pubsub.get_items_from(node, oauth_consumer, oauth_token)
-    end
-
-    def switchboard.get_options_from(node, jid)
-      # TODO this needs to be implemented in OAuthServiceHelper
-      pubsub.get_options_from(node, jid, oauth_consumer, oauth_token)
-    end
-
-    def switchboard.publish_item_to(node, item)
-      # TODO this needs to be implemented in OAuthServiceHelper
-      pubsub.publish_item_to(node, item, oauth_consumer, oauth_token)
-    end
-
-    def switchboard.publish_item_with_id_to(node, item, id)
-      # TODO this needs to be implemented in OAuthServiceHelper
-      pubsub.publish_item_with_id_to(node, item, id, oauth_consumer, oauth_token)
-    end
-
-    def switchboard.purge_items_from(node)
-      # TODO this needs to be implemented in OAuthServiceHelper
-      pubsub.purge_items_from(node, oauth_consumer, oauth_token)
-    end
-
-    def switchboard.set_config_for(node, config)
-      # TODO this needs to be implemented in OAuthServiceHelper
-      pubsub.set_config_for(node, config, oauth_consumer, oauth_token)
-    end
-
-    def switchboard.subscribe_to(node)
-      pubsub.subscribe_to(node, oauth_consumer, oauth_token)
-    end
-
-    def switchboard.subscriptions(node = nil)
-      if node
-        # TODO this needs to be implemented in OAuthServiceHelper
-        pubsub.get_subscriptions_from(node, oauth_consumer, oauth_token)
-      else
-        pubsub.get_subscriptions_from_all_nodes(oauth_consumer, oauth_token)
-      end
-    end
-
-    def switchboard.unsubscribe_from(node)
-      pubsub.unsubscribe_from(node, oauth_consumer, oauth_token)
-    end
-
-    # TODO add the ability to define accessors
-    def switchboard.oauth_consumer
-      @oauth_consumer
-    end
-
-    def switchboard.oauth_token
-      @oauth_token
-    end
-
-    def switchboard.pubsub
-      @pubsub
-    end
-
-    def switchboard.on_pubsub_event(&block)
-      register_hook(:pubsub_event, &block)
     end
   end
 end
