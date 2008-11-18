@@ -9,8 +9,8 @@ end
 # allow local library modifications/additions to be loaded
 $: << File.join(File.dirname(__FILE__))
 
-require 'switchboard/delegate'
-require 'switchboard/instance_exec'
+require 'switchboard/ext/delegate'
+require 'switchboard/ext/instance_exec'
 require 'xmpp4r/roster'
 
 

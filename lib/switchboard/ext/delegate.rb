@@ -1,4 +1,5 @@
 class Module
+  # Modified version from ActiveSupport to support :with (for additional arguments)
   def delegate(*methods)
     options = methods.pop
     unless options.is_a?(Hash) && to = options[:to]
