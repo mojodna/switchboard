@@ -3,6 +3,7 @@ begin
 rescue LoadError => e
   gem = e.message.split("--").last.strip
   puts "The #{gem} gem is required."
+  exit 1
 end
 require 'xmpp4r/tune'
 

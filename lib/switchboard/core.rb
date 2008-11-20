@@ -4,6 +4,7 @@ begin
 rescue LoadError => e
   gem = e.message.split("--").last.strip
   puts "The #{gem} gem is required."
+  exit 1
 end
 
 # allow local library modifications/additions to be loaded
