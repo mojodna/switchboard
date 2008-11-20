@@ -23,7 +23,7 @@ module Switchboard
               if items && items.any?
                 puts "Items:"
                 items.each do |id, item|
-                  puts [id, item] * ": "
+                  puts [id, item].compact * ": "
                 end
               else
                 puts "No items available for node '#{OPTIONS["pubsub.node"]}'."
