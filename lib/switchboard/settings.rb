@@ -6,6 +6,7 @@ module Switchboard
       @path = path
 
       if File.exists?(path)
+        set_perms
         @config = YAML.load(File.read(path))
       end
 
@@ -21,6 +22,7 @@ module Switchboard
     def set!(key, value)
       set(key, value)
       write
+      set_perms
     end
 
     def set(key, value)
@@ -36,5 +38,10 @@ module Switchboard
         f << @config.to_yaml
       end
     end
+
+    def set_perms
+      File.chmod 0600, @path
+    end
+
   end
 end
