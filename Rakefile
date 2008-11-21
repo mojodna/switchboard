@@ -16,6 +16,9 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_dependency("xmpp4r")
+  s.add_dependency("oauth")
+  s.add_dependency("rb-appscript")
+
 end
   EOF
 
