@@ -19,7 +19,7 @@ module Switchboard
 
           # TODO consider using client.register_info.inspect
           begin
-            puts "Registering #{settings["jid"]} with password '#{settings["password"]}'."
+            puts "Registering #{settings["jid"]}"
             iq = client.register(settings["password"])
           rescue Jabber::ServerError => e
             puts "Could not register: #{e}"
