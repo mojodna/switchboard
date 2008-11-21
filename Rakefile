@@ -1,5 +1,6 @@
-require 'switchboard'
+require File.join("lib", "switchboard", "version")
 
+desc "Generate the gemspec"
 task :gemspec do
   gemspec =<<-EOF
 Gem::Specification.new do |s|
