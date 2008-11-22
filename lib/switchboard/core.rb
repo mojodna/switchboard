@@ -102,6 +102,10 @@ module Switchboard
       end
     end
 
+    def hook(*events)
+      self.class.hook(*events)
+    end
+
     # Connect a jack to the switchboard
     def plug!(*jacks)
       @jacks ||= []
