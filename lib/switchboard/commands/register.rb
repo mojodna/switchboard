@@ -3,7 +3,7 @@ module Switchboard
     class Register < Switchboard::Command
       description "Register a JID"
 
-      class Registration < Switchboard::Core
+      class Registration < Switchboard::Client
         def initialize(settings = Switchboard::Settings.new, spin = false)
           super(settings, false)
         end

@@ -10,7 +10,7 @@ module Switchboard
         end
 
         def self.run!
-          switchboard = Switchboard::Core.new do
+          switchboard = Switchboard::Client.new do
             defer :items_retrieved do
               get_items_from(OPTIONS["pubsub.node"], OPTIONS["pubsub.items.count"])
             end

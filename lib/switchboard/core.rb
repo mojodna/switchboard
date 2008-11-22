@@ -14,12 +14,11 @@ require 'switchboard/ext/delegate'
 require 'switchboard/ext/instance_exec'
 require 'xmpp4r/roster'
 
-
 module Switchboard
   class Core
     include Timeout
 
-    attr_reader :client, :jacks, :roster, :settings
+    attr_reader :jacks, :settings
 
     def initialize(settings = Switchboard::Settings.new, spin = true, &block)
       # register a handler for SIGINTs
@@ -42,12 +41,9 @@ module Switchboard
       @shutdown = false
       @deferreds = {}
       @main = block if block_given?
-
-      # TODO jid may already have a resource, so account for that
-      @client = Jabber::Client.new([settings["jid"], settings["resource"]] * "/")
     end
 
-    # Turn the hydrant on.
+    # Start running.
     def run!
       startup
 
@@ -63,22 +59,22 @@ module Switchboard
     # TODO don't start threads yet; wait until all startup hooks have been run
     def defer(callback_name, timeout = 30, &block)
       puts "Deferring to #{callback_name}..." if debug?
-      @deferreds[callback_name.to_sym] = Thread.new do
+      @deferreds[callback_name.to_sym] = Thread.new(callback_name.to_sym) do |callback|
 
         begin
 
           timeout(timeout) do
             begin
               results = instance_eval(&block)
-              send(callback_name.to_sym, results)
+              send(callback, results) if respond_to?(callback)
             rescue Jabber::ServerError => e
               puts "Server error: #{e}"
             end
           end
 
-          puts "Done with #{callback_name}." if debug?
+          puts "Done with #{callback}." if debug?
           # TODO make this thread-safe
-          @deferreds.delete(callback_name.to_sym)
+          @deferreds.delete(callback)
 
         rescue Timeout::Error
           puts "Deferred method timed out."
@@ -105,7 +101,7 @@ module Switchboard
       end
     end
 
-    # Register a hook to run when the Jabber::Client encounters an exception.
+    # Register a hook to run when the Jabber::Stream encounters an exception.
     def on_exception(&block)
       register_hook(:exception, &block)
     end
@@ -125,56 +121,24 @@ module Switchboard
       register_hook(:presence, &block)
     end
 
-    def on_roster_presence(&block)
-      register_hook(:roster_presence, &block)
-    end
-
-    def on_roster_query(&block)
-      register_hook(:roster_query, &block)
-    end
-
-    def on_roster_subscription(&block)
-      register_hook(:roster_subscription, &block)
-    end
-
-    def on_roster_subscription_request(&block)
-      register_hook(:roster_subscription_request, &block)
-    end
-
-    def on_roster_loaded(&block)
-      register_hook(:roster_loaded, &block)
-    end
-
-    def on_roster_update(&block)
-      register_hook(:roster_update, &block)
-    end
-
     # Register a startup hook.
-    # Hooks will be given 5 seconds to complete before moving on.
     def on_startup(&block)
       register_hook(:startup, &block)
     end
 
+    def on_stream_connected(&block)
+      register_hook(:stream_connected, &block)
+    end
+
     # Register a shutdown hook.
-    # Hooks will be given 5 seconds to complete before moving on.
     def on_shutdown(&block)
       register_hook(:shutdown, &block)
     end
 
   protected
 
-    def auth!
-      client.auth(settings["password"])
-      @roster = Jabber::Roster::Helper.new(client)
-    rescue Jabber::ClientAuthenticationFailure => e
-      puts "Could not authenticate as #{settings["jid"]}"
-      shutdown(false)
-      exit 1
-    end
-
     def connect!
-      client.connect
-      auth!
+      raise NotImplementedError, "subclasses of Switchboard::Core must implement connect!"
     end
 
     def connected?
@@ -185,9 +149,8 @@ module Switchboard
       settings["debug"]
     end
 
-    def disconnect
-      presence(:unavailable)
-      client.close
+    def disconnect!
+      raise NotImplementedError, "subclasses of Switchboard::Core must implement disconnect!"
     end
 
     def register_hook(name, &block)
@@ -224,14 +187,8 @@ module Switchboard
       @loop
     end
 
-    def presence(status = nil, to = nil)
-      presence = Jabber::Presence.new(nil, status)
-      presence.to = to
-      client.send(presence)
-    end
-
     def register_default_callbacks
-      client.on_exception do |e, stream, where|
+      stream.on_exception do |e, stream, where|
         on(:exception, e, stream, where)
 
         case where
@@ -242,46 +199,16 @@ module Switchboard
         end
       end
 
-      client.add_presence_callback do |presence|
+      stream.add_presence_callback do |presence|
         on(:presence, presence)
       end
 
-      client.add_message_callback do |message|
+      stream.add_message_callback do |message|
         on(:message, message)
       end
 
-      client.add_iq_callback do |iq|
+      stream.add_iq_callback do |iq|
         on(:iq, iq)
-      end
-    end
-
-    def register_roster_callbacks
-      # presence from someone on my roster
-      roster.add_presence_callback do |item, old_presence, new_presence|
-        on(:roster_presence, item, old_presence, new_presence)
-      end
-
-      # roster query completed (rarely used)
-      roster.add_query_callback do |query|
-        on(:roster_query, query)
-      end
-
-      # roster subscription
-      roster.add_subscription_callback do |item, presence|
-        # confirmation that we were able to subscribe to someone else
-        on(:roster_subscription, item, presence)
-      end
-
-      roster.add_subscription_request_callback do |item, presence|
-        # someone wants to subscribe to me!
-        on(:roster_subscription_request, item, presence)
-      end
-
-      # roster was updated (rarely used)
-      roster.add_update_callback do |old_item, new_item|
-        # roster has been updated; don't care
-        # puts "update: #{old_item.inspect}, #{new_item.inspect}"
-        on(:roster_update, old_item, new_item)
       end
     end
 
@@ -292,13 +219,7 @@ module Switchboard
           @connected = true
 
           register_default_callbacks
-          register_roster_callbacks
-
-          # tell others that we're online
-          presence
-
-          # wait for the roster to load
-          roster.wait_for_roster
+          on(:stream_connected)
         end
       rescue Timeout::Error
         puts "Startup took too long.  Shutting down."
@@ -306,15 +227,16 @@ module Switchboard
         exit 1
       end
 
-      # roster has now been loaded
-      on(:roster_loaded)
-
       puts "Core startup completed." if debug?
 
       # run startup hooks
       on(:startup)
 
       puts "=> Switchboard started."
+    end
+
+    def stream
+      raise NotImplementedError, "subclasses of Switchboard::Core must implement stream"
     end
 
     def shutdown!
@@ -332,7 +254,7 @@ module Switchboard
       on(:shutdown) if run_hooks
 
       puts "Shutting down..." if debug?
-      disconnect if connected?
+      disconnect! if connected?
     end
 
     def shutdown?

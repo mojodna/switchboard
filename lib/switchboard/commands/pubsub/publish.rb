@@ -10,7 +10,7 @@ module Switchboard
         end
 
         def self.run!
-          switchboard = Switchboard::Core.new do
+          switchboard = Switchboard::Client.new do
             defer :item_published do
               item = Jabber::PubSub::Item.new
               item.text = STDIN.read

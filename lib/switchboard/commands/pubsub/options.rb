@@ -10,7 +10,7 @@ module Switchboard
         end
 
         def self.run!
-          switchboard = Switchboard::Core.new do
+          switchboard = Switchboard::Client.new do
             defer :options_retrieved do
               get_options_from(OPTIONS["pubsub.node"], OPTIONS["pubsub.subscriber"] || OPTIONS["jid"])
             end

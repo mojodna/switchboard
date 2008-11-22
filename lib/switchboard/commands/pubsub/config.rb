@@ -5,7 +5,7 @@ module Switchboard
         description "Gets the configuration for a pubsub node"
 
         def self.run!
-          switchboard = Switchboard::Core.new do
+          switchboard = Switchboard::Client.new do
             defer :configuration_retrieved do
               if ARGV.length == 2
                 key, value = ARGV

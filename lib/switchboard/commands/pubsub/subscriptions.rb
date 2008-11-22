@@ -5,7 +5,7 @@ module Switchboard
         description "List pubsub subscriptions"
 
         def self.run!
-          switchboard = Switchboard::Core.new do
+          switchboard = Switchboard::Client.new do
             # this executes in the main loop, so it doesn't really matter that this runs in a different thread
             defer :subscriptions_received do
               subscriptions(settings["pubsub.node"])

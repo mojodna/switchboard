@@ -5,7 +5,7 @@ module Switchboard
         description "Listens for pubsub events"
 
         def self.run!
-          switchboard = Switchboard::Core.new
+          switchboard = Switchboard::Client.new
           switchboard.plug!(PubSubJack)
 
           switchboard.on_pubsub_event do |event|

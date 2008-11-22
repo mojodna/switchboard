@@ -5,7 +5,7 @@ module Switchboard
         description "Lists pubsub affiliations"
 
         def self.run!
-          switchboard = Switchboard::Core.new do
+          switchboard = Switchboard::Client.new do
             defer :affiliations_received do
               pubsub.get_affiliations(OPTIONS["pubsub.node"])
             end

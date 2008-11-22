@@ -4,7 +4,7 @@ module Switchboard
       description "Unregister a JID"
 
       def self.run!
-        switchboard = Switchboard::Core.new do
+        switchboard = Switchboard::Client.new do
           begin
             client.remove_registration
           rescue Jabber::ServerError => e

@@ -1,4 +1,5 @@
 require 'switchboard/core'
+require 'switchboard/client'
 require 'switchboard/commands'
 require 'switchboard/jacks'
 require 'switchboard/settings'

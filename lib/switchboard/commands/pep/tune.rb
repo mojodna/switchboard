@@ -14,7 +14,7 @@ module Switchboard
         description "Broadcasting UserTune (XEP-0118)"
 
         def self.run!
-          switchboard = Switchboard::Core.new do
+          switchboard = Switchboard::Client.new do
             @tune_helper = Jabber::UserTune::Helper.new(client, nil)
 
             itunes = Appscript.app('iTunes')

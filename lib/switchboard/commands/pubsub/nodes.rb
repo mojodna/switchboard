@@ -6,7 +6,7 @@ module Switchboard
         description "Lists available pubsub nodes (maybe use pubsub.<server>)"
 
         def self.run!
-          switchboard = Switchboard::Core.new do
+          switchboard = Switchboard::Client.new do
             defer :nodes_retrieved do
               browser = Jabber::PubSub::NodeBrowser.new(client)
               browser.nodes(OPTIONS["pubsub.server"])

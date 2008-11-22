@@ -6,7 +6,7 @@ module Switchboard
         description "Gets information about a pubsub resource"
 
         def self.run!
-          switchboard = Switchboard::Core.new do
+          switchboard = Switchboard::Client.new do
             defer :info_retrieved do
               browser = Jabber::PubSub::NodeBrowser.new(client)
               browser.get_info(OPTIONS["pubsub.server"], OPTIONS["pubsub.node"])

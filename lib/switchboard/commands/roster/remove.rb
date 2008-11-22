@@ -4,14 +4,10 @@ module Switchboard
       class Remove < Switchboard::Command
         description "Remove a JID from your roster"
 
-        def self.options(opts)
-          super(opts)
-          # opts.on("-l", "--log=path", String, "Specifies a path to log script output.") { |v| OPTIONS[:log] = v }
-        end
-
         def self.run!
-          # TODO override settings with values from the command line
-          switchboard = Switchboard::Core.new do
+          switchboard = Switchboard::Client.new(Switchboard::Settings.new, false)
+
+          switchboard.on_roster_loaded do
             ARGV.each do |jid|
               if (items = roster.find(jid)).any?
                 item = items.values.first

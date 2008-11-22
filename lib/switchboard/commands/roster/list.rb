@@ -6,7 +6,9 @@ module Switchboard
 
         def self.run!
           # TODO override settings with values from the command line
-          switchboard = Switchboard::Core.new do
+          switchboard = Switchboard::Client.new(Switchboard::Settings.new, false)
+
+          switchboard.on_roster_loaded do
             if roster.items.any?
               puts "#{settings["jid"]}'s roster:"
               puts roster.items.keys.map { |jid| jid.to_s } * "\n"

@@ -5,7 +5,7 @@ module Switchboard
         description "Purges a pubsub node"
 
         def self.run!
-          switchboard = Switchboard::Core.new do
+          switchboard = Switchboard::Client.new do
             defer :node_purged do
               purge_items_from(OPTIONS["pubsub.node"])
             end

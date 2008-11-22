@@ -5,7 +5,7 @@ module Switchboard
         description "Deletes a pubsub node"
 
         def self.run!
-          switchboard = Switchboard::Core.new do
+          switchboard = Switchboard::Client.new do
             defer :node_deleted do
               delete_node(OPTIONS["pubsub.node"])
             end
