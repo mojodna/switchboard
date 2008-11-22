@@ -13,9 +13,9 @@ module Switchboard
           switchboard = Switchboard::Core.new do
             defer :node_created do
               if OPTIONS["pubsub.create.node_type"] == "collection"
-                create_collection_node(OPTIONS["pubsub.node"])
+                create_collection_node(OPTIONS["pubsub.node"], nil)
               else
-                create_node(OPTIONS["pubsub.node"])
+                create_node(OPTIONS["pubsub.node"], nil)
               end
             end
 
