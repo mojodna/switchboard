@@ -24,29 +24,9 @@ module Switchboard
       end
     end
 
-    def on_roster_presence(&block)
-      register_hook(:roster_presence, &block)
-    end
-
-    def on_roster_query(&block)
-      register_hook(:roster_query, &block)
-    end
-
-    def on_roster_subscription(&block)
-      register_hook(:roster_subscription, &block)
-    end
-
-    def on_roster_subscription_request(&block)
-      register_hook(:roster_subscription_request, &block)
-    end
-
-    def on_roster_loaded(&block)
-      register_hook(:roster_loaded, &block)
-    end
-
-    def on_roster_update(&block)
-      register_hook(:roster_update, &block)
-    end
+    hook \
+      :roster_presence, :roster_query, :roster_subscription,
+      :roster_subscription_request, :roster_loaded, :roster_update
 
   protected
 

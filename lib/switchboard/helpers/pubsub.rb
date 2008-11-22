@@ -12,9 +12,7 @@ module Switchboard
         :publish_item_with_id_to, :purge_items_from, :set_config_for,
         :subscribe_to, :unsubscribe_from, :to => :pubsub
 
-      def on_pubsub_event(&block)
-        register_hook(:pubsub_event, &block)
-      end
+      Switchboard::Core.hook(:pubsub_event)
 
       def subscriptions(node = nil)
         # NOTE: node-specific subscriptions do not appear to work in ejabberd 2.0.2

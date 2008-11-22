@@ -20,6 +20,21 @@ module Switchboard
 
     attr_reader :jacks, :settings
 
+    # Register a hook
+    def self.hook(*events)
+      events.each do |event|
+        module_eval(<<-EOS, __FILE__, __LINE__)
+          def on_#{event}(method = nil, &block)
+            if block_given?
+              register_hook(:#{event}, &block)
+            elsif method
+              register_hook(:#{event}, method)
+            end
+          end
+        EOS
+      end
+    end
+
     def initialize(settings = Switchboard::Settings.new, spin = true, &block)
       # register a handler for SIGINTs
       trap(:INT) do
@@ -101,39 +116,7 @@ module Switchboard
       end
     end
 
-    # Register a hook to run when the Jabber::Stream encounters an exception.
-    def on_exception(&block)
-      register_hook(:exception, &block)
-    end
-
-    # Register a hook to run when iq stanzas are received.
-    def on_iq(&block)
-      register_hook(:iq, &block)
-    end
-
-    # Register a hook to run when message stanzas are received.
-    def on_message(&block)
-      register_hook(:message, &block)
-    end
-
-    # Register a hook to run when presence stanzas are received.
-    def on_presence(&block)
-      register_hook(:presence, &block)
-    end
-
-    # Register a startup hook.
-    def on_startup(&block)
-      register_hook(:startup, &block)
-    end
-
-    def on_stream_connected(&block)
-      register_hook(:stream_connected, &block)
-    end
-
-    # Register a shutdown hook.
-    def on_shutdown(&block)
-      register_hook(:shutdown, &block)
-    end
+    hook(:exception, :iq, :message, :presence, :startup, :stream_connected, :shutdown)
 
   protected
 
@@ -153,12 +136,19 @@ module Switchboard
       stream.close
     end
 
-    def register_hook(name, &block)
+    def register_hook(name, method = nil, &block)
       @hooks ||= {}
-      @hooks[name.to_sym] ||= []
+      name = name.to_sym
+      @hooks[name] ||= []
 
       puts "Registering #{name} hook" if debug?
-      @hooks[name.to_sym] << block
+      if block_given?
+        @hooks[name] << block
+      else
+        @hooks[name] << lambda do |*args|
+          send(method.to_sym, *args)
+        end
+      end
     end
 
     def on(name, *args)
