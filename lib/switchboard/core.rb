@@ -150,7 +150,7 @@ module Switchboard
     end
 
     def disconnect!
-      raise NotImplementedError, "subclasses of Switchboard::Core must implement disconnect!"
+      stream.close
     end
 
     def register_hook(name, &block)
@@ -165,6 +165,7 @@ module Switchboard
       @hooks ||= {}
       @hooks[name.to_sym] ||= []
       @hooks[name.to_sym].each do |hook|
+        puts "Executing hook '#{name}'" if debug?
         execute_hook(hook, *args)
       end
     end
@@ -192,7 +193,11 @@ module Switchboard
         on(:exception, e, stream, where)
 
         case where
-        when :something
+        when :disconnected
+          puts "Jabber service disconnected.  Shutting down."
+          exit 1
+        when :exit
+          puts "Shutting down."
         else
           puts "Caught #{e.inspect} on #{stream} at #{where}.  You might want to consider handling this."
           raise e
@@ -215,10 +220,11 @@ module Switchboard
     def startup
       begin
         timeout(30) do
+          register_default_callbacks
+
           connect!
           @connected = true
 
-          register_default_callbacks
           on(:stream_connected)
         end
       rescue Timeout::Error

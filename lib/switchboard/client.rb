@@ -66,7 +66,7 @@ module Switchboard
 
     def disconnect!
       presence(:unavailable)
-      client.close
+      super
     end
 
     def presence(status = nil, to = nil)
