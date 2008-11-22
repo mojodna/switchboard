@@ -12,11 +12,7 @@ module Switchboard
         def self.run!
           switchboard = Switchboard::Core.new do
             defer :items_retrieved do
-              begin
-                get_items_from(OPTIONS["pubsub.node"], OPTIONS["pubsub.items.count"])
-              rescue Jabber::ServerError => e
-                puts e
-              end
+              get_items_from(OPTIONS["pubsub.node"], OPTIONS["pubsub.items.count"])
             end
 
             def items_retrieved(items)

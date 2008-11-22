@@ -7,11 +7,7 @@ module Switchboard
         def self.run!
           switchboard = Switchboard::Core.new do
             defer :affiliations_received do
-              begin
-                pubsub.get_affiliations(OPTIONS["pubsub.node"])
-              rescue Jabber::ServerError => e
-                puts e
-              end
+              pubsub.get_affiliations(OPTIONS["pubsub.node"])
             end
 
             def affiliations_received(affiliations)

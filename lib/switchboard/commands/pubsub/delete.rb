@@ -7,11 +7,7 @@ module Switchboard
         def self.run!
           switchboard = Switchboard::Core.new do
             defer :node_deleted do
-              begin
-                delete_node(OPTIONS["pubsub.node"])
-              rescue Jabber::ServerError => e
-                puts e
-              end
+              delete_node(OPTIONS["pubsub.node"])
             end
 
             def node_deleted(success)

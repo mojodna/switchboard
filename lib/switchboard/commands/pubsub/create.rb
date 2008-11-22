@@ -12,14 +12,10 @@ module Switchboard
         def self.run!
           switchboard = Switchboard::Core.new do
             defer :node_created do
-              begin
-                if OPTIONS["pubsub.create.node_type"] == "collection"
-                  create_collection_node(OPTIONS["pubsub.node"])
-                else
-                  create_node(OPTIONS["pubsub.node"])
-                end
-              rescue Jabber::ServerError => e
-                puts e
+              if OPTIONS["pubsub.create.node_type"] == "collection"
+                create_collection_node(OPTIONS["pubsub.node"])
+              else
+                create_node(OPTIONS["pubsub.node"])
               end
             end
 

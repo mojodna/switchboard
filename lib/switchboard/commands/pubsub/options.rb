@@ -12,11 +12,7 @@ module Switchboard
         def self.run!
           switchboard = Switchboard::Core.new do
             defer :options_retrieved do
-              begin
-                get_options_from(OPTIONS["pubsub.node"], OPTIONS["pubsub.subscriber"] || OPTIONS["jid"])
-              rescue Jabber::ServerError => e
-                puts e
-              end
+              get_options_from(OPTIONS["pubsub.node"], OPTIONS["pubsub.subscriber"] || OPTIONS["jid"])
             end
 
             def options_retrieved(options)

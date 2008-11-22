@@ -8,12 +8,8 @@ module Switchboard
         def self.run!
           switchboard = Switchboard::Core.new do
             defer :info_retrieved do
-              begin
-                browser = Jabber::PubSub::NodeBrowser.new(client)
-                browser.get_info(OPTIONS["pubsub.server"], OPTIONS["pubsub.node"])
-              rescue Jabber::ServerError => e
-                puts e
-              end
+              browser = Jabber::PubSub::NodeBrowser.new(client)
+              browser.get_info(OPTIONS["pubsub.server"], OPTIONS["pubsub.node"])
             end
 
             def info_retrieved(info)

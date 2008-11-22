@@ -68,8 +68,12 @@ module Switchboard
         begin
 
           timeout(timeout) do
-            results = instance_eval(&block)
-            send(callback_name.to_sym, results)
+            begin
+              results = instance_eval(&block)
+              send(callback_name.to_sym, results)
+            rescue Jabber::ServerError => e
+              puts "Server error: #{e}"
+            end
           end
 
           puts "Done with #{callback_name}." if debug?

@@ -8,11 +8,7 @@ module Switchboard
           switchboard = Switchboard::Core.new do
             # this executes in the main loop, so it doesn't really matter that this runs in a different thread
             defer :unsubscribed do
-              begin
-                unsubscribe_from(settings["pubsub.node"])
-              rescue Jabber::ServerError => e
-                puts e
-              end
+              unsubscribe_from(settings["pubsub.node"])
             end
 
             # define here or as hydrant.subscriptions_received

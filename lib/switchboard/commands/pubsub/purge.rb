@@ -7,11 +7,7 @@ module Switchboard
         def self.run!
           switchboard = Switchboard::Core.new do
             defer :node_purged do
-              begin
-                purge_items_from(OPTIONS["pubsub.node"])
-              rescue Jabber::ServerError => e
-                puts e
-              end
+              purge_items_from(OPTIONS["pubsub.node"])
             end
 
             def node_purged(success)
