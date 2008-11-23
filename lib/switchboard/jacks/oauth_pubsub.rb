@@ -1,8 +1,7 @@
-require 'switchboard/helpers/oauth_pubsub'
-
-# TODO subclass PubSubJack
 class OAuthPubSubJack
   def self.connect(switchboard, settings)
+    require 'switchboard/helpers/oauth_pubsub'
+
     # TODO generalize this pattern for required settings
     unless settings["pubsub.server"]
       puts "A pubsub server must be specified."

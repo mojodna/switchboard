@@ -1,11 +1,4 @@
-begin
-  require 'fire_hydrant'
-rescue LoadError => e
-  gem = e.message.split("--").last.strip
-  puts "The #{gem} gem is required."
-  exit 1
-end
-
+require 'rubygems'
 require 'xmpp4r/location'
 
 module Switchboard
@@ -15,6 +8,14 @@ module Switchboard
         description "Broadcasting UserLocation (XEP-0080)"
 
         def self.run!
+          begin
+            require 'fire_hydrant'
+          rescue LoadError => e
+            gem = e.message.split("--").last.strip
+            puts "The #{gem} gem is required for this command to work."
+            exit 1
+          end
+
           switchboard = Switchboard::Client.new
           switchboard.plug!(AutoAcceptJack, FireEagleJack)
 

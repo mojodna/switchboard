@@ -21,7 +21,7 @@ module Switchboard
             end
           end
 
-          if OPTIONS["oauth"]
+          if defined?(OAuth) && OPTIONS["oauth"]
             switchboard.plug!(OAuthPubSubJack)
           else
             switchboard.plug!(PubSubJack)

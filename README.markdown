@@ -9,6 +9,12 @@ Install it:
 
     $ sudo gem install mojodna-switchboard -s http://gems.github.com
 
+Install optional dependencies for additional functionality:
+
+    $ sudo gem install oauth # (for OAuth PubSub support)
+    $ sudo gem install fire-hydrant # (for User Location support)
+    $ sudo gem install rb-appscript # (for User Tune support)
+
 Configure it:
 
     $ switchboard config jid jid@example.com

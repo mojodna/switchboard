@@ -1,10 +1,4 @@
-begin
-  require 'appscript'
-rescue LoadError => e
-  gem = e.message.split("--").last.strip
-  puts "The #{gem} gem is required."
-  exit 1
-end
+require 'rubygems'
 require 'xmpp4r/tune'
 
 module Switchboard
@@ -14,6 +8,14 @@ module Switchboard
         description "Broadcasting UserTune (XEP-0118)"
 
         def self.run!
+          begin
+            require 'appscript'
+          rescue LoadError => e
+            gem = e.message.split("--").last.strip
+            puts "The #{gem} gem is required for this command to work."
+            exit 1
+          end
+
           switchboard = Switchboard::Client.new do
             @tune_helper = Jabber::UserTune::Helper.new(client, nil)
 
