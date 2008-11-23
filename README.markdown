@@ -9,11 +9,22 @@ Install it:
 
     $ sudo gem install mojodna-switchboard -s http://gems.github.com
 
-Install optional dependencies for additional functionality:
+Install optional dependencies for additional functionality.
 
-    $ sudo gem install oauth # (for OAuth PubSub support)
-    $ sudo gem install fire-hydrant # (for User Location support)
-    $ sudo gem install rb-appscript # (for User Tune support)
+OAuth PubSub support:
+
+    $ sudo gem install oauth
+
+User Location (XEP-0080) support via Fire Eagle:
+
+    $ sudo gem install mojodna-fire-hydrant -s http://gems.github.com
+
+_Note: you will need to set up a PubSub subscription to your location via Fire
+Eagle for this to work._
+
+User Tune (XEP-0118) support via iTunes (on Mac OS X):
+
+    $ sudo gem install rb-appscript
 
 Configure it:
 
@@ -41,7 +52,7 @@ Subscribe to a node using OAuth, overriding default settings:
         --node "/api/0.1/user/<token>" \
         subscribe
 
-Publish iTunes' current track using UserTune (XEP-0118):
+Publish iTunes' current track using User Tune (XEP-0118):
 
     $ switchboard --resource switchtunes pep tune
 

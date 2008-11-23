@@ -16,6 +16,9 @@ module Switchboard
             exit 1
           end
 
+          # TODO check for at least one Fire Eagle subscription, otherwise this
+          # will never broadcast anything.
+
           switchboard = Switchboard::Client.new
           switchboard.plug!(AutoAcceptJack, FireEagleJack)
 
