@@ -18,6 +18,7 @@ module Switchboard
           opts.on("--oauth-token =oken", String, "Specifies the OAuth token to use.") { |v| OPTIONS["oauth.token"] = v }
           opts.on("--oauth-token-secret=secret", String, "Specifies the OAuth token secret to use.") { |v| OPTIONS["oauth.token_secret"] = v }
         end
+        opts
       end
     end
   end

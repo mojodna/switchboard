@@ -1,3 +1,9 @@
+require 'rubygems'
+begin
+  require 'oauth'
+rescue LoadError => e
+end
+
 require 'switchboard/core'
 require 'switchboard/client'
 require 'switchboard/component'
