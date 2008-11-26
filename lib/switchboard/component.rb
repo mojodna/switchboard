@@ -23,7 +23,7 @@ module Switchboard
       auth!
       puts "Component connected." if debug?
     rescue Errno::ECONNREFUSED, Errno::ETIMEDOUT
-      puts "Couldn't connect to Jabber server at #{settings["component.host"]}:#{settings["component.host"]}.
+      puts "Couldn't connect to Jabber server at #{settings["component.host"]}:#{settings["component.port"]}.
             That may mean the Jabber server isn't running or listening on that port,
             or there might be firewall issues. Exiting."
       exit 1
