@@ -8,9 +8,10 @@ module Switchboard
       attr_reader :pubsub
 
       delegate :create_node, :create_collection_node, :delete_node,
-        :get_config_from, :get_options_from, :get_items_from, :publish_item_to,
-        :publish_item_with_id_to, :purge_items_from, :set_config_for,
-        :subscribe_to, :unsubscribe_from, :to => :pubsub
+        :delete_item_from, :get_config_from, :get_options_from, :get_items_from,
+        :publish_item_to, :publish_item_with_id_to, :purge_items_from,
+        :set_config_for, :subscribe_to, :unsubscribe_from,
+        :to => :pubsub
 
       Switchboard::Core.hook(:pubsub_event)
 

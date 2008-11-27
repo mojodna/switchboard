@@ -22,9 +22,10 @@ module Switchboard
 
       # TODO most/all of these need to be implemented in OAuthServiceHelper
       delegate :create_node, :create_collection_node, :delete_node,
-        :get_config_from, :get_options_from, :get_items_from, :publish_item_to,
-        :publish_item_with_id_to, :purge_items_from, :set_config_for,
-        :subscribe_to, :unsubscribe_from, :to => :pubsub,
+        :delete_item_from, :get_config_from, :get_options_from, :get_items_from,
+        :publish_item_to, :publish_item_with_id_to, :purge_items_from,
+        :set_config_for, :subscribe_to, :unsubscribe_from,
+        :to   => :pubsub,
         :with => [:oauth_consumer, :oauth_token]
 
       def subscriptions(node = nil)
