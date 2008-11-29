@@ -22,8 +22,9 @@ module Switchboard
             end
 
             def item_published(success)
+              # puts "Result: #{success.to_s}"
               if success
-                puts "Item was published."
+                puts "Item was published." # TODO include id
               else
                 puts "Item could not be published."
               end
