@@ -65,7 +65,7 @@ module Switchboard
       if @main
         instance_eval(&@main)
       elsif loop?
-        sleep 5 while !shutdown?
+        sleep 1 while !shutdown?
       end
 
       shutdown
@@ -245,6 +245,12 @@ module Switchboard
     end
 
     def shutdown(run_hooks = true)
+      if Thread.current != Thread.main
+        $stderr.puts "Wrong thread! You should be using #shutdown! instead."
+        shutdown!
+        return
+      end
+
       while (pending = @deferreds.select { |k,d| d.alive? }.length) > 0
         puts "Waiting for #{pending} thread(s) to finish" if debug?
         sleep 1
