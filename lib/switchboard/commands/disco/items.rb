@@ -23,11 +23,9 @@ module Switchboard
           switchboard.on_iq do |iq|
             # look for a response to the query we just made
             if iq.from == settings["disco.target"] && iq.id == iq_id
-              items = Jabber::Discovery::IqQueryDiscoItems.import(iq.query)
-
-              if items.items.any?
+              if iq.query.items.any?
                 puts "Item Discovery for #{settings["disco.target"]}#{settings["disco.node"] ? " (#{settings["disco.node"]})" : ""}"
-                items.items.each do |item|
+                iq.query.items.each do |item|
                   name = "#{item.iname}#{item.node ? " (#{item.node})" : ""}"
                   puts "  " + [item.jid, name].reject { |x| x == "" } * ": "
                 end
