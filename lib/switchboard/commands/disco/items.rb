@@ -7,33 +7,18 @@ module Switchboard
         description "Item discovery"
 
         def self.run!
-          iq_id = Jabber::IdGenerator.generate_id
+          switchboard = Switchboard::Client.new do
+            helper = Jabber::Discovery::Helper.new(client)
+            resp = helper.get_items_for(settings["disco.target"], settings["disco.node"])
 
-          switchboard = Switchboard::Client.new
-
-          switchboard.on_startup do
-            iq = Jabber::Iq.new(:get, settings["disco.target"])
-            iq.id = iq_id
-            disco = Jabber::Discovery::IqQueryDiscoItems.new
-            disco.node = settings["disco.node"]
-            iq.add(disco)
-            client.send(iq)
-          end
-
-          switchboard.on_iq do |iq|
-            # look for a response to the query we just made
-            if iq.from == settings["disco.target"] && iq.id == iq_id
-              if iq.query.items.any?
-                puts "Item Discovery for #{settings["disco.target"]}#{settings["disco.node"] ? " (#{settings["disco.node"]})" : ""}"
-                iq.query.items.each do |item|
-                  name = "#{item.iname}#{item.node ? " (#{item.node})" : ""}"
-                  puts "  " + [item.jid, name].reject { |x| x == "" } * ": "
-                end
-              else
-                puts "No items were discoverable for #{settings["disco.target"]}."
+            if resp.items.any?
+              puts "Item Discovery for #{settings["disco.target"]}#{settings["disco.node"] ? " (#{settings["disco.node"]})" : ""}"
+              resp.items.each do |item|
+                name = "#{item.iname}#{item.node ? " (#{item.node})" : ""}"
+                puts "  " + [item.jid, name].reject { |x| x == "" } * ": "
               end
-
-              shutdown!
+            else
+              puts "No items were discoverable for #{settings["disco.target"]}."
             end
           end
 
