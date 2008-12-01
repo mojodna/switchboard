@@ -96,8 +96,7 @@ module Switchboard
         rescue
           puts "An error occurred while running a deferred: #{$!}"
           puts $!.backtrace * "\n"
-          puts "Initiating shutdown..."
-          @shutdown = true
+          shutdown!
         end
       end
     end
@@ -174,7 +173,7 @@ module Switchboard
       puts "An error occurred while running the hook; shutting down..."
       puts $!
       puts $!.backtrace * "\n"
-      shutdown
+      shutdown!
       raise
     end
 
