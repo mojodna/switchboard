@@ -11,31 +11,19 @@ module Switchboard
       end
 
       def self.run!
-        iq_id = Jabber::IdGenerator.generate_id
+        switchboard = Switchboard::Client.new do
+          helper = Jabber::LastActivity::Helper.new(client)
+          resp = helper.get_last_activity_from(jid = Jabber::JID.new(settings["last.target"]))
 
-        switchboard = Switchboard::Client.new
+          status = " (#{resp.status})" if resp.status
+          status ||= ""
 
-        switchboard.on_startup do
-          iq = Jabber::Iq.new(:get, settings["last.target"])
-          iq.id = iq_id
-          iq.add(Jabber::LastActivity::IqQueryLastActivity.new)
-          client.send(iq)
-        end
-
-        switchboard.on_iq do |iq|
-          # look for a response to the query we just made
-          if iq.from == settings["last.target"] && iq.id == iq_id
-            status = " (#{iq.query.status})" if iq.query.status
-            status ||= ""
-            if iq.from.resource
-              puts "#{iq.from} idle: #{iq.query.seconds} seconds" << status
-            elsif iq.from.node
-              puts "#{iq.from} last disconnected: " << (Time.new - iq.query.seconds).to_s << status
-            else
-              puts "#{iq.from} uptime: #{iq.query.seconds} seconds" << status
-            end
-
-            shutdown!
+          if jid.resource
+            puts "#{jid} idle: #{resp.seconds} seconds" << status
+          elsif jid.node
+            puts "#{jid} last disconnected: " << (Time.new - resp.seconds).to_s << status
+          else
+            puts "#{jid} uptime: #{resp.seconds} seconds" << status
           end
         end
 
