@@ -49,6 +49,19 @@ module Switchboard
         end
 
         shutdown!
+
+        sleep 0.1 until shutdown_complete?
+      end
+
+      at_exit do
+        @deferreds.each do |name, deferred|
+          puts "Killing #{name}" if debug?
+          deferred.kill
+        end
+
+        shutdown!
+
+        sleep 0.1 until shutdown_complete?
       end
 
       @settings = settings
@@ -260,10 +273,16 @@ module Switchboard
 
       puts "Shutting down..." if debug?
       disconnect! if connected?
+
+      @shutdown_complete = true
     end
 
     def shutdown?
       @shutdown
+    end
+
+    def shutdown_complete?
+      @shutdown_complete
     end
   end
 end
