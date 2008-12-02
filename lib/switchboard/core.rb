@@ -43,25 +43,11 @@ module Switchboard
           exit
         end
 
-        @deferreds.each do |name, deferred|
-          puts "Killing #{name}" if debug?
-          deferred.kill
-        end
-
-        shutdown!
-
-        sleep 0.1 until shutdown_complete?
+        die
       end
 
       at_exit do
-        @deferreds.each do |name, deferred|
-          puts "Killing #{name}" if debug?
-          deferred.kill
-        end
-
-        shutdown!
-
-        sleep 0.1 until shutdown_complete?
+        die
       end
 
       @settings = settings
@@ -154,6 +140,22 @@ module Switchboard
 
     def debug?
       settings["debug"]
+    end
+
+    def die
+      @deferreds.each do |name, deferred|
+        puts "Killing #{name}" if debug?
+        deferred.kill
+      end
+
+      shutdown!
+
+      timeout(15) do
+        sleep 0.1 until shutdown_complete?
+      end
+
+    rescue Timeout::Error
+      puts "Shutdown timed out."
     end
 
     def disconnect!
