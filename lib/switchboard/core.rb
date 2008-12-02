@@ -75,6 +75,8 @@ module Switchboard
     def run!
       startup
 
+      @ready = true
+
       if @main
         instance_eval(&@main)
       elsif loop?
@@ -130,6 +132,10 @@ module Switchboard
           exit 1
         end
       end
+    end
+
+    def ready?
+      @ready
     end
 
     hook(:exception, :iq, :message, :presence, :startup, :stream_connected, :shutdown)
