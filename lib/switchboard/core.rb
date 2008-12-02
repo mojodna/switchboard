@@ -73,6 +73,8 @@ module Switchboard
 
     # Start running.
     def run!
+      @main_thread = Thread.current
+
       startup
 
       @ready = true
@@ -263,7 +265,7 @@ module Switchboard
     end
 
     def shutdown(run_hooks = true)
-      if Thread.current != Thread.main
+      if Thread.current != @main_thread
         $stderr.puts "Wrong thread! You should be using #shutdown! instead."
         shutdown!
         return
