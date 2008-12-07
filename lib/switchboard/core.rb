@@ -150,8 +150,11 @@ module Switchboard
 
       shutdown!
 
-      timeout(15) do
-        sleep 0.1 until shutdown_complete?
+      if Thread.current != @main_thread
+        timeout(15) do
+          puts "Waiting for shutdown to complete."
+          sleep 0.1 until shutdown_complete?
+        end
       end
 
     rescue Timeout::Error
