@@ -27,15 +27,14 @@ module Switchboard
           end
 
           switchboard.on_location_update do |user|
-            # for some reason the Fire Eagle gem doesn't work when I access #name directly
-            name = user.locations[0].instance_eval { @doc.at("//name").innerText }
-            timestamp = Time.parse(user.locations[0].instance_eval { @doc.at("//located-at").innerText })
+            name = user.locations.first
+            timestamp = user.locations.first.located_at
 
             area, postalcode, locality, region, country = nil
 
             user.locations.each do |loc|
-              level = loc.instance_eval { @doc.at("//level-name").innerText }
-              normal_name = loc.instance_eval { @doc.at("//normal-name").innerText }
+              level = loc.level_name
+              normal_name = loc.normal_name
               case level
               when "exact"
                 street = normal_name
