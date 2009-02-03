@@ -1,4 +1,3 @@
-require 'rubygems'
 require 'xmpp4r/location'
 
 module Switchboard
@@ -11,8 +10,8 @@ module Switchboard
           begin
             require 'fire_hydrant'
           rescue LoadError => e
-            gem = e.message.split("--").last.strip
-            puts "The #{gem} gem is required for this command to work."
+            lib = e.message.split("--").last.strip
+            puts "#{lib} is required for this command to work."
             exit 1
           end
 

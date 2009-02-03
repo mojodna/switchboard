@@ -1,9 +1,14 @@
-require 'rubygems'
 begin
   require 'oauth'
 rescue LoadError => e
-  gem = e.message.split("--").last.strip
-  puts "The #{gem} gem is required."
+  lib = e.message.split("--").last.strip
+  puts "#{lib} is required."
+  exit 1
+end
+
+require 'oauth/version'
+if OAuth::VERSION < "0.3.1.1"
+  puts "The OAuth library must be at least version 0.3.1.1."
   exit 1
 end
 

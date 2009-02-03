@@ -1,9 +1,8 @@
-require 'rubygems'
 begin
   require 'xmpp4r'
 rescue LoadError => e
-  gem = e.message.split("--").last.strip
-  puts "The #{gem} gem is required."
+  lib = e.message.split("--").last.strip
+  puts "#{lib} is required."
   exit 1
 end
 

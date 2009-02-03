@@ -1,4 +1,3 @@
-require 'rubygems'
 begin
   require 'oauth'
 rescue LoadError => e

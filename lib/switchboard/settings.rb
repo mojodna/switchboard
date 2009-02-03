@@ -1,3 +1,5 @@
+require 'yaml'
+
 module Switchboard
   class Settings
     DEFAULT_PATH = File.join(ENV["HOME"], ".switchboardrc")
