@@ -1,6 +1,6 @@
 begin
   require 'oauth'
-rescue LoadError => e
+rescue LoadError
 end
 
 require 'switchboard/core'
