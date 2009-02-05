@@ -7,8 +7,8 @@ rescue LoadError => e
 end
 
 require 'oauth/version'
-if OAuth::VERSION < "0.3.1.1"
-  puts "The OAuth library must be at least version 0.3.1.1."
+if OAuth::VERSION < "0.3.1.4"
+  puts "The OAuth library must be at least version 0.3.1.4."
   exit 1
 end
 
