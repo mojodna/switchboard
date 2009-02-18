@@ -1,13 +1,4 @@
 module Switchboard
-  class Command
-    OPTIONS = {}
-    DEFAULT_OPTIONS = {
-      # :detach  => false,
-      "debug"    => false,
-      "oauth"    => false,
-      "resource" => "switchboard"
-    }
-  end
   module Commands
     class Default < Switchboard::Command
       unregister!

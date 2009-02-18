@@ -16,7 +16,7 @@ module Switchboard
     end
 
     def get(key)
-      Switchboard::Command::OPTIONS[key] || @config[key] || Switchboard::Command::DEFAULT_OPTIONS[key]
+      Switchboard::OPTIONS[key] || @config[key] || Switchboard::DEFAULT_OPTIONS[key]
     end
 
     alias_method :[], :get

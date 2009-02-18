@@ -14,6 +14,14 @@ require 'switchboard/ext/instance_exec'
 require 'xmpp4r/roster'
 
 module Switchboard
+  OPTIONS = {}
+  DEFAULT_OPTIONS = {
+    # :detach  => false,
+    "debug"    => false,
+    "oauth"    => false,
+    "resource" => "switchboard"
+  }
+
   class Core
     include Timeout
 
