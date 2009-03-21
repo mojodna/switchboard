@@ -15,7 +15,7 @@ module Switchboard
           opts.on("--oauth", "Sign requests using OAuth.") { OPTIONS["oauth"] = true }
           opts.on("--oauth-consumer-key=key", String, "Specifies the OAuth consumer key to use.") { |v| OPTIONS["oauth.consumer_key"] = v }
           opts.on("--oauth-consumer-secret=secret", String, "Specifies the OAuth consumer secret to use.") { |v| OPTIONS["oauth.consumer_secret"] = v }
-          opts.on("--oauth-token =oken", String, "Specifies the OAuth token to use.") { |v| OPTIONS["oauth.token"] = v }
+          opts.on("--oauth-token=token", String, "Specifies the OAuth token to use.") { |v| OPTIONS["oauth.token"] = v }
           opts.on("--oauth-token-secret=secret", String, "Specifies the OAuth token secret to use.") { |v| OPTIONS["oauth.token_secret"] = v }
         end
         opts
