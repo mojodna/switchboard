@@ -9,3 +9,4 @@ require 'switchboard/component'
 require 'switchboard/jacks'
 require 'switchboard/settings'
 require 'switchboard/version'
+
