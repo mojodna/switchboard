@@ -133,7 +133,7 @@ module Switchboard
       @ready
     end
 
-    hook(:exception, :iq, :message, :presence, :startup, :stream_connected, :shutdown)
+    hook(:exception, :iq, :message, :presence, :stanza, :startup, :stream_connected, :shutdown)
 
   protected
 
@@ -232,14 +232,17 @@ module Switchboard
 
       stream.add_presence_callback do |presence|
         on(:presence, presence)
+        on(:stanza, presence)
       end
 
       stream.add_message_callback do |message|
         on(:message, message)
+        on(:stanza, message)
       end
 
       stream.add_iq_callback do |iq|
         on(:iq, iq)
+        on(:stanza, iq)
       end
     end
 
