@@ -11,11 +11,10 @@ class OAuthPubSubJack
     switchboard.extend(Switchboard::Helpers::OAuthPubSubHelper)
 
     switchboard.on_startup do
-      @pubsub = Jabber::PubSub::OAuthServiceHelper.new(client, settings["pubsub.server"])
-
       @oauth_consumer = OAuth::Consumer.new(settings["oauth.consumer_key"], settings["oauth.consumer_secret"])
       @oauth_token = OAuth::Token.new(settings["oauth.token"], settings["oauth.token_secret"])
 
+      @pubsub = Jabber::PubSub::OAuthServiceHelper.new(client, settings["pubsub.server"], @oauth_consumer, @oauth_token)
       @pubsub.add_event_callback do |event|
         on(:pubsub_event, event)
       end
