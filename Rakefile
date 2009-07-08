@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.executables = ["switchboard"]
   s.require_paths = ["lib"]
 
-  s.add_dependency("mojodna-xmpp4r", ">=", "0.4.0.3")
+  s.add_dependency("xmpp4r", ">=", "0.5")
 end
   EOF
 
