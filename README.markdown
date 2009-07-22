@@ -3,11 +3,25 @@
 Switchboard is both a toolkit for assembling XMPP clients as well as a set of
 command-line tools for interacting with XMPP servers.
 
+## Docs
+
+* [switchboard : XMPP :: curl :
+    HTTP](http://mojodna.net/2009/07/16/switchboard-curl-for-xmpp.html) -
+    command-line usage
+* [Switchboard as a
+    Framework](http://mojodna.net/2009/07/19/switchboard-as-a-framework.html)
+* [Subscribing to Wordpress.com with
+    Switchboard](http://mojodna.net/2009/07/21/subscribing-to-wordpress-com-with-switchboard.html)
+
+## Mailing List
+
+[Switchboard Google Group](http://groups.google.com/group/switchboard)
+
 ## Getting Started
 
 Install it:
 
-    $ sudo gem install mojodna-switchboard -s http://gems.github.com
+    $ sudo gem install switchboard
 
 Install optional dependencies for additional functionality.
 
