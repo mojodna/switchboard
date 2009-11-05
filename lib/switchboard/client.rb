@@ -5,13 +5,14 @@ module Switchboard
     def initialize(settings = Switchboard::Settings.new, spin = true)
       super(settings, spin)
 
-      # create a new JID (this works even if settings["jid"] wasn't set)
+      # create a new JID (one should always be provided, even if it's just the
+      # domain component)
       @jid = Jabber::JID.new(settings["jid"])
 
       # override the resource if one was provided
       @jid.resource = settings["resource"] if settings["resource"]
 
-      # instantiate the client (with an empty JID if appropriate)
+      # instantiate the client
       @client = Jabber::Client.new(@jid)
 
       on_stream_connected do
@@ -39,8 +40,6 @@ module Switchboard
     def auth!
       if (jid.node.nil? || settings["anonymous"]) && client.supports_anonymous?
         # no node (user) component in the JID, be anonymous
-        # strictly speaking, we should be checking for a domain here, but
-        # XMPP4R has a bug when JID#domain is nil
 
         client.auth_anonymous
       else
