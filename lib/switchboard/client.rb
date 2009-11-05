@@ -1,12 +1,18 @@
 module Switchboard
   class Client < Core
-    attr_reader :client, :roster
+    attr_reader :client, :roster, :jid
 
     def initialize(settings = Switchboard::Settings.new, spin = true)
       super(settings, spin)
 
-      # TODO jid may already have a resource, so account for that
-      @client = Jabber::Client.new([settings["jid"], settings["resource"]] * "/")
+      # create a new JID (this works even if settings["jid"] wasn't set)
+      @jid = Jabber::JID.new(settings["jid"])
+
+      # override the resource if one was provided
+      @jid.resource = settings["resource"] if settings["resource"]
+
+      # instantiate the client (with an empty JID if appropriate)
+      @client = Jabber::Client.new(@jid)
 
       on_stream_connected do
         register_roster_callbacks
@@ -31,7 +37,15 @@ module Switchboard
   protected
 
     def auth!
-      client.auth(settings["password"])
+      if (jid.node.nil? || settings["anonymous"]) && client.supports_anonymous?
+        # no node (user) component in the JID, be anonymous
+        # strictly speaking, we should be checking for a domain here, but
+        # XMPP4R has a bug when JID#domain is nil
+
+        client.auth_anonymous
+      else
+        client.auth(settings["password"])
+      end
       @roster = Jabber::Roster::Helper.new(client)
     rescue Jabber::ClientAuthenticationFailure => e
       puts "Could not authenticate as #{settings["jid"]}"

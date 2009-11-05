@@ -8,7 +8,8 @@ module Switchboard
 
         opts.banner = "Usage: #{opts.program_name} [options] COMMAND [options] [args]"
 
-        # opts.on("-d", "--daemon", "Make server run as a daemon.") { OPTIONS[:detach] = true }
+        opts.on("-a", "--anonymous", "Connect anonymously.") { OPTIONS["anonymous"] = true }
+        # opts.on("-d", "--daemon", "Make server run as a daemon.") { OPTIONS["detach"] = true }
         opts.on("-j", "--jid=jid", String, "Specifies the JID to use.") { |v| OPTIONS["jid"] = v }
         opts.on("-r", "--resource=resource", String, "Specifies the resource to use.") { |v| OPTIONS["resource"] = v }
         opts.on("-p", "--password=password", String, "Specifies the password to use.") { |v| OPTIONS["password"] = v }
@@ -19,7 +20,7 @@ module Switchboard
         opts.separator ""
 
         opts.on_tail("-h", "--help", "Show this help message.") { puts opts; exit }
-        opts.on_tail("--version", "Show version") { puts "switchboard version #{Switchboard::VERSION * "."}"; exit }
+        opts.on_tail("--version", "Show version.") { puts "switchboard version #{Switchboard::VERSION * "."}"; exit }
       end
 
       def self.run!
