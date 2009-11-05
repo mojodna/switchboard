@@ -1,5 +1,4 @@
-#!/usr/bin/env ruby
-require 'rubygems'
+#!/usr/bin/env ruby -rubygems
 require 'switchboard'
 require 'switchboard/commands'
 require 'optparse'

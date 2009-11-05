@@ -2,12 +2,8 @@ begin
   require 'xmpp4r'
 rescue LoadError => e
   lib = e.message.split("--").last.strip
-  puts "#{lib} is required."
-  exit 1
+  abort "#{lib} is required."
 end
-
-# allow local library modifications/additions to be loaded
-$: << File.join(File.dirname(__FILE__))
 
 require 'switchboard/ext/delegate'
 require 'switchboard/ext/instance_exec'
