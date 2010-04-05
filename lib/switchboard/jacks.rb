@@ -1,6 +1,7 @@
 require 'jacks/auto_accept'
 require 'jacks/debug'
 require 'jacks/echo'
+require 'jacks/muc'
 require 'jacks/notify'
 require 'jacks/oauth_pubsub'
 require 'jacks/pubsub'
