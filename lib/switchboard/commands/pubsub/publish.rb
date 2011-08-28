@@ -7,13 +7,22 @@ module Switchboard
         def self.options(opts)
           super(opts)
           opts.on("--item-id=id", String, "Specifies the item id to use.") { |v| OPTIONS["pubsub.publish.id"] = v }
+          opts.on("--xml", "Specifies whether to parse input as raw xml.") { |v| OPTIONS["pubsub.publish.xml"] = v }
         end
 
         def self.run!
           switchboard = Switchboard::Client.new do
             defer :item_published do
               item = Jabber::PubSub::Item.new
-              item.text = STDIN.read
+              content = STDIN.read
+
+              if OPTIONS["pubsub.publish.xml"]
+                doc = REXML::Document.new(content)
+                item << doc.root
+              else
+                item.text = content
+              end
+
               if OPTIONS["pubsub.publish.id"]
                 publish_item_with_id_to(OPTIONS["pubsub.node"], item, OPTIONS["pubsub.publish.id"])
               else
